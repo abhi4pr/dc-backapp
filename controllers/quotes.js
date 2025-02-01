@@ -4,7 +4,7 @@ const variables = require('../variables.js')
 
 exports.addQuote = async (req, res) => {
     try {
-        const { quote_title, quote_desc, quote_seq } = req.body;
+        const { quote_title, quote_desc } = req.body;
         const quote_img = req.file;
 
         if (!quote_img) {
@@ -19,8 +19,7 @@ exports.addQuote = async (req, res) => {
         const newQuote = new quoteModel({
             quote_title,
             quote_desc,
-            quote_img: imageUrl,
-            quote_seq
+            quote_img: imageUrl
         });
 
         await newQuote.save();
@@ -74,13 +73,12 @@ exports.getAllQuotes = async (req, res) => {
 exports.updateQuote = async (req, res) => {
     try {
         const { quoteId } = req.params;
-        const { quote_title, quote_desc, quote_seq } = req.body;
+        const { quote_title, quote_desc } = req.body;
 
         const updatedData = {};
 
         if (quote_title) updatedData.quote_title = quote_title;
         if (quote_desc) updatedData.quote_desc = quote_desc;
-        if (quote_seq) updatedData.quote_seq = quote_seq;
 
         const quote_img = req.file;
         if (quote_img) {

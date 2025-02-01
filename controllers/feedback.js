@@ -26,7 +26,23 @@ exports.addFeedback = async (req, res) => {
     }
 };
 
-exports.getAllFeedback = async (req, res) => {
+exports.getSingleFeedback = async (req, res) => {
+    try {
+        const { feedbackId } = req.params;
+
+        const feedback = await feedbackModel.findById(feedbackId);
+
+        if (!feedback) {
+            return res.status(404).json({ message: "Feedback not found" });
+        }
+
+        res.status(200).json({ message: "Feedback retrieved successfully", feedback });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
+exports.getAllFeedbacks = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -46,28 +62,6 @@ exports.getAllFeedback = async (req, res) => {
                 perPage: limit,
             },
         });
-    } catch (error) {
-        res.status(500).json({ message: "Internal server error", error });
-    }
-};
-
-exports.updateFeedback = async (req, res) => {
-    try {
-        const { feedbackId } = req.params;
-        const { user_name, user_email, feed_message } = req.body;
-
-        const updatedData = {};
-
-        if (user_name) updatedData.user_name = user_name;
-        if (user_email) updatedData.user_email = user_email;
-        if (feed_message) updatedData.feed_message = feed_message;
-
-        const updatedFeedback = await feedbackModel.findByIdAndUpdate(feedbackId, updatedData, { new: true });
-        if (!updatedFeedback) {
-            return res.status(404).json({ message: "Feedback not found" });
-        }
-
-        res.status(200).json({ message: "Feedback updated successfully", feedback: updatedFeedback });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error });
     }

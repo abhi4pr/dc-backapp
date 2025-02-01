@@ -15,10 +15,23 @@ const quoteModel = new mongoose.Schema({
     },
     quote_seq: {
         type: Number,
-        required: [true, "Task sequence is required"],
-        min: [1, "Sequence must be at least 1"],
-        default: 1
+        required: [false, "Task sequence is required"],
+        min: [1, "Sequence must be at least 1"]
+        // default: 1
     }
 }, { timestamps: true });
+
+quoteModel.pre('save', async function (next) {
+    if (!this.quote_seq) {
+        const lastAgency = await this.constructor.findOne({}, {}, { sort: { 'quote_seq': -1 } });
+
+        if (lastAgency && lastAgency.quote_seq) {
+            this.quote_seq = lastAgency.quote_seq + 1;
+        } else {
+            this.quote_seq = 1;
+        }
+    }
+    next();
+});
 
 module.exports = mongoose.model('quoteModel', quoteModel);

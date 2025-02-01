@@ -15,10 +15,23 @@ const taskModel = new mongoose.Schema({
     },
     task_seq: {
         type: Number,
-        required: [true, "Task sequence is required"],
-        min: [1, "Sequence must be at least 1"],
-        default: 1
+        required: [false, "Task sequence is required"],
+        min: [1, "Sequence must be at least 1"]
+        // default: 1
     }
 }, { timestamps: true });
+
+taskModel.pre('save', async function (next) {
+    if (!this.task_seq) {
+        const lastAgency = await this.constructor.findOne({}, {}, { sort: { 'task_seq': -1 } });
+
+        if (lastAgency && lastAgency.task_seq) {
+            this.task_seq = lastAgency.task_seq + 1;
+        } else {
+            this.task_seq = 1;
+        }
+    }
+    next();
+});
 
 module.exports = mongoose.model('taskModel', taskModel);

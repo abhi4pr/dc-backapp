@@ -22,6 +22,22 @@ exports.addQuestion = async (req, res) => {
     }
 };
 
+exports.getSingleQuestion = async (req, res) => {
+    try {
+        const { questionId } = req.params;
+
+        const question = await questionModel.findById(questionId);
+
+        if (!question) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
+        res.status(200).json({ message: "Question retrieved successfully", question });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
 exports.getAllQuestions = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;

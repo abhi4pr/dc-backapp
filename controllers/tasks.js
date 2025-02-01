@@ -4,13 +4,13 @@ const taskModel = require('../models/taskModel');
 
 exports.addTask = async (req, res) => {
     try {
-        const { task_title, task_desc, task_cat, task_seq } = req.body;
+        const { task_title, task_desc, task_cat } = req.body;
 
         const newTask = new taskModel({
             task_title,
             task_desc,
             task_cat,
-            task_seq
+            // task_seq
         });
 
         await newTask.save();
@@ -64,14 +64,14 @@ exports.getAllTasks = async (req, res) => {
 exports.updateTask = async (req, res) => {
     try {
         const { taskId } = req.params;
-        const { task_title, task_desc, task_cat, task_seq } = req.body;
+        const { task_title, task_desc, task_cat } = req.body;
 
         const updatedData = {};
 
         if (task_title) updatedData.task_title = task_title;
         if (task_desc) updatedData.task_desc = task_desc;
         if (task_cat) updatedData.task_cat = task_cat;
-        if (task_seq) updatedData.task_seq = task_seq;
+        // if (task_seq) updatedData.task_seq = task_seq;
 
         const updatedTask = await taskModel.findByIdAndUpdate(taskId, updatedData, { new: true });
 
