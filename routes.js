@@ -27,10 +27,10 @@ router.get("/get_all_feedbacks", feedback.getAllFeedbacks);
 router.delete("/delete_feedback", feedback.deleteFeedback);
 
 router.post("/add_post", upload.single('post_image'), fileUpload, posts.addPost);
-router.get("/get_single_post", posts.getSinglePost);
+router.get("/get_single_post/:postId", posts.getSinglePost);
 router.get("/get_all_posts", posts.getAllPosts);
-router.put("/update_post", upload.single('post_image'), posts.updatePost);
-router.delete("/delete_post", posts.deletePost);
+router.put("/update_post/:postId", upload.single('post_image'), fileUpload, posts.updatePost);
+router.delete("/delete_post/:postId", posts.deletePost);
 
 router.post("/add_question", questions.addQuestion);
 router.get("/get_single_question/:questionId", questions.getSingleQuestion);

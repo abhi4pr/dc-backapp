@@ -4,18 +4,18 @@ const variables = require('../variables.js')
 
 exports.addPost = async (req, res) => {
     try {
-        const { user_name, post_message } = req.body;
-        const post_image = req.file;
+        const { user_name, post_title, post_message } = req.body;
+        const post_image = req.fileUrl;
 
-        let imageUrl = null;
-        if (post_image) {
-            imageUrl = await fileUpload(post_image);
+        if (!post_image) {
+            return res.status(400).json({ message: "Post image is required" });
         }
 
         const newPost = new postsModel({
-
+            user_name,
+            post_title,
             post_message,
-            post_image: imageUrl
+            post_image: post_image
         });
 
         await newPost.save();
@@ -69,21 +69,25 @@ exports.getAllPosts = async (req, res) => {
 exports.updatePost = async (req, res) => {
     try {
         const { postId } = req.params;
-        const { user_name, post_message } = req.body;
+        const { user_name, post_title, post_message } = req.body;
 
-        const updatedData = {};
+        const existingPost = await postsModel.findById(postId);
+        if (!existingPost) {
+            return res.status(404).json({ message: "Post not found" });
+        }
 
-        if (post_message) updatedData.post_message = post_message;
+        const updatedData = {
+            user_name: user_name || existingPost.user_name,
+            post_title: post_title || existingPost.post_title,
+            post_message: post_message || existingPost.post_message,
+            post_image: existingPost.post_image
+        };
 
-        const post_image = req.file;
-        if (post_image) {
-            updatedData.post_image = await fileUpload(post_image);
+        if (req.file) {
+            updatedData.post_image = req.fileUrl;
         }
 
         const updatedPost = await postsModel.findByIdAndUpdate(postId, updatedData, { new: true });
-        if (!updatedPost) {
-            return res.status(404).json({ message: "Post not found" });
-        }
 
         res.status(200).json({ message: "Post updated successfully", post: updatedPost });
     } catch (error) {
