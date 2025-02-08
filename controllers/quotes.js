@@ -5,21 +5,16 @@ const variables = require('../variables.js')
 exports.addQuote = async (req, res) => {
     try {
         const { quote_title, quote_desc } = req.body;
-        const quote_img = req.file;
+        const quote_img = req.fileUrl;
 
         if (!quote_img) {
             return res.status(400).json({ message: "Quote image is required" });
         }
 
-        let imageUrl = null;
-        if (quote_img) {
-            imageUrl = await fileUpload(quote_img);
-        }
-
         const newQuote = new quoteModel({
             quote_title,
             quote_desc,
-            quote_img: imageUrl
+            quote_img: quote_img
         });
 
         await newQuote.save();
