@@ -70,25 +70,27 @@ exports.updateQuote = async (req, res) => {
         const { quoteId } = req.params;
         const { quote_title, quote_desc } = req.body;
 
-        const updatedData = {};
+        const existingQuote = await quoteModel.findById(quoteId);
+        if (!existingQuote) {
+            return res.status(404).json({ message: "Quote not found" });
+        }
 
-        if (quote_title) updatedData.quote_title = quote_title;
-        if (quote_desc) updatedData.quote_desc = quote_desc;
+        const updatedData = {
+            quote_title: quote_title || existingQuote.quote_title,
+            quote_desc: quote_desc || existingQuote.quote_desc,
+            quote_img: existingQuote.quote_img
+        };
 
-        const quote_img = req.file;
-        if (quote_img) {
-            updatedData.quote_img = await fileUpload(quote_img);
+        if (req.file) {
+            updatedData.quote_img = req.fileUrl;
         }
 
         const updatedQuote = await quoteModel.findByIdAndUpdate(quoteId, updatedData, { new: true });
 
-        if (!updatedQuote) {
-            return res.status(404).json({ message: "Quote not found" });
-        }
-
         res.status(200).json({ message: "Quote updated successfully", quote: updatedQuote });
     } catch (error) {
-        res.status(500).json({ message: "Internal server error", error });
+        console.error("Error updating quote:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
 

@@ -13,7 +13,8 @@ const upload = multer({ storage: storage });
 const fileUpload = async (req, res, next) => {
     try {
         if (!req.file) {
-            return res.status(400).send("No file uploaded");
+            // return res.status(400).send("No file uploaded");
+            return next();
         }
 
         const fileBuffer = req.file.buffer;
