@@ -6,7 +6,7 @@ const postsModel = new mongoose.Schema({
         required: [true, "Posted by user is required"],
         minlength: [3, "Posted by user must be at least 3 characters long"]
     },
-    post_titlee: {
+    post_title: {
         type: String,
         required: [true, "Post title is required"],
         minlength: [5, "Post title must be at least 5 characters long"]
