@@ -39,9 +39,9 @@ router.put("/update_question/:questionId", questions.updateQuestion);
 router.delete("/delete_question/:questionId", questions.deleteQuestion);
 
 router.post("/add_quote", upload.single('quote_img'), fileUpload, quotes.addQuote);
-router.get("/get_single_quote", quotes.getSingleQuote);
+router.get("/get_single_quote/:quoteId", quotes.getSingleQuote);
 router.get("/get_all_quotes", quotes.getAllQuotes);
-router.put("/update_quote", upload.single('quote_image'), quotes.updateQuote);
+router.put("/update_quote/:quoteId", upload.single('quote_image'), quotes.updateQuote);
 router.delete("/delete_quote", quotes.deleteQuote);
 
 router.post("/add_task", tasks.addTask);
