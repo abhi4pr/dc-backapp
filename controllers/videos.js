@@ -5,30 +5,13 @@ const variables = require('../variables.js')
 exports.addVideo = async (req, res) => {
     try {
         const { video_title, video_desc, video_url, video_cat } = req.body;
-
-        const video_src = req.files.video_src;
-        const video_thumb = req.files.video_thumb;
-
-        if (!video_src) {
-            return res.status(400).json({ message: "Video file is required" });
-        }
-
-        let videoSrcUrl = null;
-        if (video_src && video_src[0]) {
-            videoSrcUrl = await fileUpload(video_src[0]);
-        }
-
-        let thumbUrl = null;
-        if (video_thumb && video_thumb[0]) {
-            thumbUrl = await fileUpload(video_thumb[0]);
-        }
+        const video_src = req.file;
 
         const newVideo = new videoModel({
             video_title,
             video_desc,
-            video_src: videoSrcUrl,
+            video_src: video_src,
             video_url,
-            video_thumb: thumbUrl,
             video_cat
         });
 
@@ -85,31 +68,25 @@ exports.updateVideo = async (req, res) => {
         const { videoId } = req.params;
         const { video_title, video_desc, video_url, video_cat } = req.body;
 
-        const video_src = req.files.video_src;
-        const video_thumb = req.files.video_thumb;
-
-        const updatedData = {};
-
-        if (video_title) updatedData.video_title = video_title;
-        if (video_desc) updatedData.video_desc = video_desc;
-        if (video_url) updatedData.video_url = video_url;
-        if (video_cat) updatedData.video_cat = video_cat;
-
-        if (video_src && video_src[0]) {
-            updatedData.video_src = await fileUpload(video_src[0]);
-        }
-
-        if (video_thumb && video_thumb[0]) {
-            updatedData.video_thumb = await fileUpload(video_thumb[0]);
-        }
-
-        const updatedVideo = await videoModel.findByIdAndUpdate(videoId, updatedData, { new: true });
-
-        if (!updatedVideo) {
+        const existingReward = await videoModel.findById(videoId);
+        if (!existingReward) {
             return res.status(404).json({ message: "Video not found" });
         }
 
-        res.status(200).json({ message: "Video updated successfully", video: updatedVideo });
+        const updatedData = {
+            video_title: video_title || existingReward.video_title,
+            video_desc: video_desc || existingReward.video_desc,
+            video_url: video_url || existingReward.video_url,
+            video_src: existingReward.video_src
+        };
+
+        if (req.file) {
+            updatedData.video_src = req.fileUrl;
+        }
+
+        const updatedQuote = await videoModel.findByIdAndUpdate(videoId, updatedData, { new: true });
+
+        res.status(200).json({ message: "Video updated successfully", video: updatedQuote });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error });
     }

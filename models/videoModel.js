@@ -11,15 +11,15 @@ const videoModel = new mongoose.Schema({
     },
     video_src: {
         type: String,
-        required: [true, "Video source is required"]
+        required: [false, "Video source is required"]
     },
     video_url: {
         type: String,
-        required: [true, "Video URL is required"],
+        required: [false, "Video URL is required"],
     },
     video_thumb: {
         type: String,
-        required: [true, "Video thumbnail is required"]
+        required: [false, "Video thumbnail is not required"]
     },
     video_cat: {
         type: String,

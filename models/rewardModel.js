@@ -21,4 +21,17 @@ const rewardModel = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+rewardModel.pre('save', async function (next) {
+    if (!this.reward_stage) {
+        const lastAgency = await this.constructor.findOne({}, {}, { sort: { 'reward_stage': -1 } });
+
+        if (lastAgency && lastAgency.reward_stage) {
+            this.reward_stage = lastAgency.reward_stage + 1;
+        } else {
+            this.reward_stage = 1;
+        }
+    }
+    next();
+});
+
 module.exports = mongoose.model('rewardModel', rewardModel);

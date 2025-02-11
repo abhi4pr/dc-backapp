@@ -7,16 +7,15 @@ exports.addReward = async (req, res) => {
         const { reward_title, reward_desc, reward_stage } = req.body;
         const reward_logo = req.file;
 
-        let logoUrl = null;
-        if (reward_logo) {
-            logoUrl = await fileUpload(reward_logo);
+        if (!reward_logo) {
+            return res.status(400).json({ message: "Reward image is required" });
         }
 
         const newReward = new rewardModel({
             reward_title,
             reward_desc,
-            reward_logo: logoUrl,
-            reward_stage
+            reward_logo: reward_logo
+            // reward_stage
         });
 
         await newReward.save();
@@ -70,26 +69,26 @@ exports.getAllRewards = async (req, res) => {
 exports.updateReward = async (req, res) => {
     try {
         const { rewardId } = req.params;
-        const { reward_title, reward_desc, reward_stage } = req.body;
+        const { reward_title, reward_desc } = req.body;
 
-        const updatedData = {};
-
-        if (reward_title) updatedData.reward_title = reward_title;
-        if (reward_desc) updatedData.reward_desc = reward_desc;
-        if (reward_stage) updatedData.reward_stage = reward_stage;
-
-        const reward_logo = req.file;
-        if (reward_logo) {
-            updatedData.reward_logo = await fileUpload(reward_logo);
-        }
-
-        const updatedReward = await rewardModel.findByIdAndUpdate(rewardId, updatedData, { new: true });
-
-        if (!updatedReward) {
+        const existingReward = await rewardModel.findById(rewardId);
+        if (!existingReward) {
             return res.status(404).json({ message: "Reward not found" });
         }
 
-        res.status(200).json({ message: "Reward updated successfully", reward: updatedReward });
+        const updatedData = {
+            reward_title: reward_title || existingReward.reward_title,
+            reward_desc: reward_desc || existingReward.reward_desc,
+            reward_logo: existingReward.reward_logo
+        };
+
+        if (req.file) {
+            updatedData.reward_logo = req.fileUrl;
+        }
+
+        const updatedQuote = await rewardModel.findByIdAndUpdate(rewardId, updatedData, { new: true });
+
+        res.status(200).json({ message: "Reward updated successfully", reward: updatedQuote });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error });
     }

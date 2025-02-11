@@ -7,6 +7,7 @@ const questions = require('./controllers/questions.js');
 const quotes = require('./controllers/quotes.js');
 const tasks = require('./controllers/tasks.js');
 const videos = require('./controllers/videos.js');
+const reward = require('./controllers/rewards.js');
 const token = require('./token.js');
 const { upload, fileUpload } = require('./fileUpload');
 
@@ -51,9 +52,15 @@ router.put("/update_task/:taskId", tasks.updateTask);
 router.delete("/delete_task/:taskId", tasks.deleteTask);
 
 router.post("/add_video", upload.single('video_src'), fileUpload, videos.addVideo);
-router.get("/get_single_video", videos.getSingleVideo);
+router.get("/get_single_video/:videoId", videos.getSingleVideo);
 router.get("/get_all_videos", videos.getAllVideos);
-router.put("/update_video", upload.single('video_src'), videos.updateVideo);
-router.delete("/delete_video", videos.deleteVideo);
+router.put("/update_video/:videoId", upload.single('video_src'), fileUpload, videos.updateVideo);
+router.delete("/delete_video/:videoId", videos.deleteVideo);
+
+router.post("/add_reward", upload.single('reward_logo'), fileUpload, reward.addReward);
+router.get("/get_single_reward/:rewardId", reward.getSingleReward);
+router.get("/get_all_rewards", reward.getAllRewards);
+router.put("/update_reward/:rewardId", upload.single('reward_logo'), fileUpload, reward.updateReward);
+router.delete("/delete_reward/:rewardId", reward.deleteReward);
 
 module.exports = router;
