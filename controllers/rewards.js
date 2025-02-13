@@ -5,7 +5,7 @@ const variables = require('../variables.js')
 exports.addReward = async (req, res) => {
     try {
         const { reward_title, reward_desc, reward_stage } = req.body;
-        const reward_logo = req.file;
+        const reward_logo = req.fileUrl;
 
         if (!reward_logo) {
             return res.status(400).json({ message: "Reward image is required" });

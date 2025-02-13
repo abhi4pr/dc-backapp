@@ -15,9 +15,7 @@ const rewardModel = new mongoose.Schema({
     },
     reward_stage: {
         type: Number,
-        required: [true, "Reward stage is required"],
-        min: [1, "Stage must be at least 1"],
-        max: [90, "Stage must be at most 90"]
+        required: [false, "Reward stage is required"]
     }
 }, { timestamps: true });
 

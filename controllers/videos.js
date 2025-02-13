@@ -5,7 +5,7 @@ const variables = require('../variables.js')
 exports.addVideo = async (req, res) => {
     try {
         const { video_title, video_desc, video_url, video_cat } = req.body;
-        const video_src = req.file;
+        const video_src = req.fileUrl;
 
         const newVideo = new videoModel({
             video_title,
