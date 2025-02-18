@@ -31,7 +31,7 @@ exports.addUser = async (req, res) => {
       imageUrl = await fileUpload(user_image);
     }
 
-    const newUser = new User({
+    const newUser = new userModel({
       user_email,
       user_name,
       user_password: encryptedPassword,
@@ -44,7 +44,7 @@ exports.addUser = async (req, res) => {
     await newUser.save();
     res.status(201).json({ message: "User registered successfully", user: newUser });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
