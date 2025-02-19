@@ -4,7 +4,7 @@ const variables = require('../variables.js')
 
 exports.addQuestion = async (req, res) => {
     try {
-        const { question, options } = req.body;
+        const { question, options, question_cat } = req.body;
 
         if (options.length < 4) {
             return res.status(400).json({ message: "At least four options are required" });
@@ -12,7 +12,8 @@ exports.addQuestion = async (req, res) => {
 
         const newQuestion = new questionModel({
             question,
-            options
+            options,
+            question_cat
         });
 
         await newQuestion.save();
@@ -66,7 +67,7 @@ exports.getAllQuestions = async (req, res) => {
 exports.updateQuestion = async (req, res) => {
     try {
         const { questionId } = req.params;
-        const { question, options } = req.body;
+        const { question, options, question_cat } = req.body;
 
         if (options.length < 4) {
             return res.status(400).json({ message: "At least fourtwo options are required" });
@@ -76,6 +77,7 @@ exports.updateQuestion = async (req, res) => {
 
         if (question) updatedData.question = question;
         if (options) updatedData.options = options;
+        if (question_cat) updatedData.question_cat = question_cat;
 
         const updatedQuestion = await questionModel.findByIdAndUpdate(questionId, updatedData, { new: true });
 

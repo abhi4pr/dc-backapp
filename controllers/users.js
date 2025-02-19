@@ -94,21 +94,26 @@ exports.updateUser = async (req, res) => {
     const { userId } = req.params;
     const { user_name, user_email, user_phone, user_address, user_password } = req.body;
 
-    const updatedData = {};
+    const existingUser = await userModel.findById(userId);
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
 
-    if (user_name) updatedData.user_name = user_name;
-    if (user_email) updatedData.user_email = user_email;
-    if (user_phone) updatedData.user_phone = user_phone;
-    if (user_address) updatedData.user_address = user_address;
+    const updatedData = {
+      user_name: user_name || existingUser.user_name,
+      user_address: user_address || existingUser.user_address,
+      user_image: existingUser.user_image
+    }
+
+    if (req.file) {
+      updatedData.user_image = req.fileUrl;
+    }
 
     if (user_password) {
       updatedData.user_password = encryptPassword(user_password);
     }
 
     const updatedUser = await userModel.findByIdAndUpdate(userId, updatedData, { new: true });
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
 
     res.status(200).json({ message: "User updated successfully", user: updatedUser });
   } catch (error) {

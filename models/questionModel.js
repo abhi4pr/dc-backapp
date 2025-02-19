@@ -13,7 +13,11 @@ const questionModel = new mongoose.Schema({
         type: Number,
         required: [false, "Task sequence is required"],
         min: [1, "Sequence must be at least 1"]
-    }
+    },
+    question_cat: {
+        type: String,
+        required: [true, "Question category is required"]
+    },
 }, { timestamps: true });
 
 questionModel.pre('save', async function (next) {
