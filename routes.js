@@ -5,6 +5,7 @@ const feedback = require('./controllers/feedback.js');
 const posts = require('./controllers/posts.js');
 const questions = require('./controllers/questions.js');
 const quotes = require('./controllers/quotes.js');
+const audios = require('./controllers/audios.js');
 const tasks = require('./controllers/tasks.js');
 const videos = require('./controllers/videos.js');
 const reward = require('./controllers/rewards.js');
@@ -62,5 +63,11 @@ router.get("/get_single_reward/:rewardId", reward.getSingleReward);
 router.get("/get_all_rewards", reward.getAllRewards);
 router.put("/update_reward/:rewardId", upload.single('reward_logo'), fileUpload, reward.updateReward);
 router.delete("/delete_reward/:rewardId", reward.deleteReward);
+
+router.post("/add_audio", upload.single('audio_file'), fileUpload, audios.addAudio);
+router.get("/get_single_audio/:audioId", audios.getSingleAudio);
+router.get("/get_all_audios", audios.getAllAudio);
+router.put("/update_audio/:audioId", upload.single('audio_file'), fileUpload, audios.updateAudio);
+router.delete("/delete_audio/:audioId", audios.deleteAudio);
 
 module.exports = router;

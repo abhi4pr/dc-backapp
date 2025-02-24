@@ -11,7 +11,7 @@ const quoteModel = new mongoose.Schema({
     },
     quote_img: {
         type: String,
-        required: [true, 'Quote Image is required'],
+        required: [false, 'Quote Image is not required'],
     },
     quote_seq: {
         type: Number,

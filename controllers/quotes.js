@@ -7,9 +7,9 @@ exports.addQuote = async (req, res) => {
         const { quote_title, quote_desc } = req.body;
         const quote_img = req.fileUrl;
 
-        if (!quote_img) {
-            return res.status(400).json({ message: "Quote image is required" });
-        }
+        // if (!quote_img) {
+        //     return res.status(400).json({ message: "Quote image is required" });
+        // }
 
         const newQuote = new quoteModel({
             quote_title,
