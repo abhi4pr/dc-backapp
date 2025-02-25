@@ -9,6 +9,9 @@ const audios = require('./controllers/audios.js');
 const tasks = require('./controllers/tasks.js');
 const videos = require('./controllers/videos.js');
 const reward = require('./controllers/rewards.js');
+const taskStatus = require('./controllers/taskStatus.js');
+const moods = require('./controllers/moods.js');
+const journals = require('./controllers/journals.js');
 const token = require('./token.js');
 const { upload, fileUpload } = require('./fileUpload');
 
@@ -69,5 +72,16 @@ router.get("/get_single_audio/:audioId", audios.getSingleAudio);
 router.get("/get_all_audios", audios.getAllAudio);
 router.put("/update_audio/:audioId", upload.single('audio_file'), fileUpload, audios.updateAudio);
 router.delete("/delete_audio/:audioId", audios.deleteAudio);
+
+router.post("/add_journal", journals.addJournal);
+router.get("/get_single_journal/:userId", journals.getSingleJournal);
+router.put("/update_journal/:journalId", journals.updateJournal);
+
+router.post("/add_mood", moods.addMood);
+// router.get("/get_single_journal/:userId", journals.getSingleJournal);
+router.get("/get_all_moods/:userId", moods.getUserMoodsByMonth);
+
+router.get("/get_tasks/:userId", taskStatus.getUserTaskStatuses);
+router.put("/update_task_status", taskStatus.updateTaskStatus);
 
 module.exports = router;
