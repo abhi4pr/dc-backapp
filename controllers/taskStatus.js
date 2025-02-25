@@ -5,7 +5,14 @@ const taskModel = require('../models/taskModel');
 exports.getUserTaskStatuses = async (req, res) => {
     try {
         const { userId } = req.params;
-        const taskStatuses = await taskModel.find().sort('task_seq').limit(3);
+
+        // Calculate the offset based on the current day
+        const today = new Date();
+        const dayNumber = Math.floor((today - new Date(today.getFullYear(), 0, 1)) / (24 * 60 * 60 * 1000)); // Day of the year
+        const offset = (dayNumber % Math.ceil(await taskModel.countDocuments() / 3)) * 3; // Rotate tasks every 3 days
+
+        // Fetch 3 tasks based on the offset
+        const taskStatuses = await taskModel.find().sort('task_seq').skip(offset).limit(3);
         const userTaskStatuses = await taskStatusModel.find({ user_id: userId });
 
         const tasksWithStatus = taskStatuses.map(task => {

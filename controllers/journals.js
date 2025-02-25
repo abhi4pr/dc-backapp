@@ -22,8 +22,9 @@ exports.addJournal = async (req, res) => {
 exports.getSingleJournal = async (req, res) => {
     try {
         const { userId } = req.params;
+        const { date } = req.query;
 
-        const journal = await journalModel.findOne({ user_id: userId, journal_date: req.body.journal_date });
+        const journal = await journalModel.findOne({ user_id: userId, journal_date: date });
 
         if (!journal) {
             return res.status(404).json({ message: "Journal not found" });
