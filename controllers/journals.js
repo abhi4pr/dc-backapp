@@ -24,7 +24,17 @@ exports.getSingleJournal = async (req, res) => {
         const { userId } = req.params;
         const { date } = req.query;
 
-        const journal = await journalModel.findOne({ user_id: userId, journal_date: date });
+        const startOfDay = new Date(date);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const journal = await journalModel.findOne({
+            user_id: userId,
+            journal_date: {
+                $gte: startOfDay,
+                $lt: endOfDay
+            }
+        });
 
         if (!journal) {
             return res.status(404).json({ message: "Journal not found" });
