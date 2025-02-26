@@ -48,11 +48,11 @@ exports.getSingleJournal = async (req, res) => {
 
 exports.updateJournal = async (req, res) => {
     try {
-        const { journal_id } = req.params;
+        const { journalId } = req.params;
         const { journal_desc, journal_date } = req.body;
 
         const updatedJournal = await journalModel.findByIdAndUpdate(
-            journal_id,
+            journalId,
             { journal_desc },
             { new: true }
         );
