@@ -37,7 +37,7 @@ exports.getUserTaskStatuses = async (req, res) => {
 
 exports.updateTaskStatus = async (req, res) => {
     try {
-        const { userId, taskId } = req.params;
+        const { taskId, userId } = req.params;
         const { status } = req.body;
 
         const existingStatus = await taskStatusModel.findOne({ user_id: userId, task_id: taskId });

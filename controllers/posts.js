@@ -1,4 +1,6 @@
 const postsModel = require('../models/postsModel');
+const commentModel = require('../models/commentModel');
+const likesModel = require('../models/likesModel');
 const { fileUpload } = require('../fileUpload.js');
 const variables = require('../variables.js')
 
@@ -105,6 +107,55 @@ exports.deletePost = async (req, res) => {
         }
 
         res.status(200).json({ message: "Post deleted successfully", post: deletedPost });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
+exports.addLike = async (req, res) => {
+    try {
+        const { user_id, post_id } = req.body;
+
+        const newLike = new likesModel({
+            user_id,
+            post_id
+        });
+
+        await newLike.save();
+        res.status(201).json({ message: "Like added successfully", comment: newLike });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
+exports.addComment = async (req, res) => {
+    try {
+        const { user_id, post_id, comment_message } = req.body;
+
+        const newComment = new commentModel({
+            user_id,
+            post_id,
+            comment_message
+        });
+
+        await newComment.save();
+        res.status(201).json({ message: "Comment added successfully", comment: newComment });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error });
+    }
+};
+
+exports.getPostComments = async (req, res) => {
+    try {
+        const { postId } = req.params;
+
+        const comments = await commentModel.find({ postId });
+
+        if (!comments) {
+            return res.status(404).json({ message: "Comment not found" });
+        }
+
+        res.status(200).json({ message: "Comments retrieved successfully", comments });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error });
     }

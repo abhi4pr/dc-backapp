@@ -36,6 +36,9 @@ router.get("/get_single_post/:postId", posts.getSinglePost);
 router.get("/get_all_posts", posts.getAllPosts);
 router.put("/update_post/:postId", upload.single('post_image'), fileUpload, posts.updatePost);
 router.delete("/delete_post/:postId", posts.deletePost);
+router.post("/add_like", posts.addLike);
+router.post("/add_comment", posts.addComment);
+router.get("/get_all_comments/:postId", posts.getPostComments);
 
 router.post("/add_question", questions.addQuestion);
 router.get("/get_single_question/:questionId", questions.getSingleQuestion);
@@ -82,6 +85,6 @@ router.get("/get_single_mood/:userId", moods.getSingleMood);
 router.get("/get_all_moods/:userId", moods.getUserMoodsByMonth);
 
 router.get("/get_tasks/:userId", taskStatus.getUserTaskStatuses);
-router.put("/update_task_status", taskStatus.updateTaskStatus);
+router.put("/update_task_status/:taskId/:userId", taskStatus.updateTaskStatus);
 
 module.exports = router;
