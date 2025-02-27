@@ -22,8 +22,19 @@ exports.addMood = async (req, res) => {
 exports.getSingleMood = async (req, res) => {
     try {
         const { userId } = req.params;
+        const { date } = req.query;
 
-        const mood = await moodModel.findOne({ user_id: userId }).sort({ mood_date: -1 });
+        const startOfDay = new Date(date);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const mood = await moodModel.findOne({
+            user_id: userId,
+            mood_date: {
+                $gte: startOfDay,
+                $lt: endOfDay
+            }
+        });
 
         if (!mood) {
             return res.status(404).json({ message: "Mood not found" });

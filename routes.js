@@ -78,7 +78,7 @@ router.get("/get_single_journal/:userId", journals.getSingleJournal);
 router.put("/update_journal/:journalId", journals.updateJournal);
 
 router.post("/add_mood", moods.addMood);
-// router.get("/get_single_journal/:userId", journals.getSingleJournal);
+router.get("/get_single_mood/:userId", moods.getSingleMood);
 router.get("/get_all_moods/:userId", moods.getUserMoodsByMonth);
 
 router.get("/get_tasks/:userId", taskStatus.getUserTaskStatuses);
