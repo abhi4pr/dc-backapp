@@ -4,7 +4,7 @@ const variables = require('../variables.js')
 
 exports.addFeedback = async (req, res) => {
     try {
-        const { user_name, user_email, feed_message } = req.body;
+        const { user_id, user_name, user_email, feed_message } = req.body;
         const feedback_image = req.file;
 
         let imageUrl = null;
@@ -13,6 +13,7 @@ exports.addFeedback = async (req, res) => {
         }
 
         const newFeedback = new feedbackModel({
+            user_id,
             user_name,
             user_email,
             feed_message,

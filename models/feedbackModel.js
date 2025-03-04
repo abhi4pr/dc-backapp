@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 const validator = require("validator");
 
 const feedbackModel = new mongoose.Schema({
-
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: [true, "User ID is required"]
+    },
     user_name: {
         type: String,
         required: [true, "Name is required"]
