@@ -5,9 +5,9 @@ const journeyCPsModel = new mongoose.Schema({
         type: String,
         required: [true, 'checkpoint name is required']
     },
-    cp_des: {
+    cp_desc: {
         type: String,
-        required: [false, 'description is not required'],
+        required: false,
         default: ''
     },
     cp_video: {
@@ -20,10 +20,6 @@ const journeyCPsModel = new mongoose.Schema({
         type: Number,
         required: true,
         unique: true
-    },
-    cp_unlocked: {
-        type: Boolean,
-        default: false
     }
 });
 

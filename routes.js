@@ -88,13 +88,14 @@ router.get("/get_all_moods/:userId", moods.getUserMoodsByMonth);
 router.get("/get_tasks/:userId", taskStatus.getUserTaskStatuses);
 router.put("/update_task_status/:taskId/:userId", taskStatus.updateTaskStatus);
 
-router.post("/add_checkpoint_by_admin", upload.single('cp_video'), fileUpload, journey.addCheckPointsByAdmin)
-router.post("/add_user_progress", journey.completeCheckpoint);
+router.get("/user/progress/:userId", journey.getUserProgress);
 router.get("/get_all_checkpoints", journey.getAllCheckpoints);
-router.get("/get_single_checkpoint/:checkpointId", journey.getCheckpointDetails);
-router.get("/get_user_progress/:userId", journey.getUserProgress);
-router.get("/get_checkpoint_tasks/:checkpointId", journey.getTasksForCheckpoint);
-router.post("/complete_user_checkpoint", journey.completeJourneyTask);
-router.post("/start_user_journey", journey.startUserJourney);
+router.get("/get_checkpoints/:userId", journey.getCheckpointUserid);
+router.get("/checkpoint/:checkpoint_id/:user_id", journey.checkpointWithUser);
+router.put("/checkpoint/video-shown", journey.updateVideoSeen);
+router.put("/checkpoint/description-shown", journey.updateDescSeen);
+router.put("/checkpoint/complete-tasks", journey.updateTasksDone);
+router.put("/checkpoint/unlock-next", journey.unLockNextCheckpoint)
+router.get("/checkpoint_details/:_id", journey.getCheckpointDetails);
 
 module.exports = router;
