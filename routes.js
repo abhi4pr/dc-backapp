@@ -12,6 +12,7 @@ const reward = require('./controllers/rewards.js');
 const taskStatus = require('./controllers/taskStatus.js');
 const moods = require('./controllers/moods.js');
 const journals = require('./controllers/journals.js');
+const journey = require('./controllers/journey.js');
 const token = require('./token.js');
 const { upload, fileUpload } = require('./fileUpload');
 
@@ -86,5 +87,14 @@ router.get("/get_all_moods/:userId", moods.getUserMoodsByMonth);
 
 router.get("/get_tasks/:userId", taskStatus.getUserTaskStatuses);
 router.put("/update_task_status/:taskId/:userId", taskStatus.updateTaskStatus);
+
+router.post("/add_checkpoint_by_admin", upload.single('cp_video'), fileUpload, journey.addCheckPointsByAdmin)
+router.post("/add_user_progress", journey.completeCheckpoint);
+router.get("/get_all_checkpoints", journey.getAllCheckpoints);
+router.get("/get_single_checkpoint/:checkpointId", journey.getCheckpointDetails);
+router.get("/get_user_progress/:userId", journey.getUserProgress);
+router.get("/get_checkpoint_tasks/:checkpointId", journey.getTasksForCheckpoint);
+router.post("/complete_user_checkpoint", journey.completeJourneyTask);
+router.post("/start_user_journey", journey.startUserJourney);
 
 module.exports = router;
