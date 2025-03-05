@@ -20,6 +20,10 @@ const journeyCPsModel = new mongoose.Schema({
         type: Number,
         required: true,
         unique: true
+    },
+    cp_unlocked: {
+        type: Boolean,
+        default: false
     }
 });
 
