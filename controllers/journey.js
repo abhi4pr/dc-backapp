@@ -165,7 +165,7 @@ exports.startUserJourney = async (req, res) => {
     }
 };
 
-export const unlockNextCheckpoint = async (req, res) => {
+exports.unlockNextCheckpoint = async (req, res) => {
     try {
         const { completedCheckpointId } = req.body;
 
