@@ -4,6 +4,9 @@ const variables = require('../variables.js')
 const nodemailer = require("nodemailer");
 const CryptoJS = require("crypto-js");
 const { fileUpload } = require('../fileUpload.js');
+const twilio = require("twilio");
+
+const client = twilio(variables.TWILIO_ACCOUNT_SID, variables.TWILIO_AUTH_TOKEN);
 
 const encryptPassword = (password) => {
   return CryptoJS.AES.encrypt(password, variables.PASS_KEY).toString();
@@ -17,7 +20,7 @@ const decryptPassword = (encryptedPassword) => {
 exports.addUser = async (req, res) => {
   try {
     const { user_email, user_name, user_password, user_phone, user_address } = req.body;
-    const user_image = req.file;
+    // const user_image = req.file;
 
     const existingUser = await userModel.findOne({ user_email });
     if (existingUser) {
@@ -26,11 +29,6 @@ exports.addUser = async (req, res) => {
 
     const encryptedPassword = encryptPassword(user_password);
 
-    let imageUrl = null;
-    if (user_image) {
-      imageUrl = await fileUpload(user_image);
-    }
-
     const newUser = new userModel({
       user_email,
       user_name,
@@ -38,7 +36,7 @@ exports.addUser = async (req, res) => {
       user_phone,
       user_address,
       // user_status,
-      user_image: imageUrl
+      // user_image: imageUrl
     });
 
     await newUser.save();
@@ -92,7 +90,7 @@ exports.getAllUsers = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { user_name, user_email, user_phone, user_address, user_password } = req.body;
+    const { user_name, user_email, user_phone, user_address, user_password, seen_questions } = req.body;
 
     const existingUser = await userModel.findById(userId);
     if (!existingUser) {
@@ -102,6 +100,7 @@ exports.updateUser = async (req, res) => {
     const updatedData = {
       user_name: user_name || existingUser.user_name,
       user_address: user_address || existingUser.user_address,
+      seen_questions: seen_questions || existingUser.seen_questions,
       user_image: existingUser.user_image
     }
 
@@ -161,3 +160,67 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error });
   }
 };
+
+// exports.sendOtp = async (req, res) => {
+//   try {
+//     const { user_email, user_name, user_password, user_phone } = req.body;
+//     const existingUser = await userModel.findOne({ user_phone });
+//     if (existingUser) {
+//       return res.status(400).json({ message: "Phone number already registered" });
+//     }
+
+//     const otp = Math.floor(100000 + Math.random() * 900000);
+//     const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000); // OTP expires in 5 mins
+
+//     const encryptedPassword = encryptPassword(user_password);
+
+//     const newUser = new userModel({
+//       user_name: user_name,
+//       user_email: user_email,
+//       user_password: encryptedPassword,
+//       user_phone,
+//       user_otp: otp.toString(),
+//       otpExpiresAt,
+//       isPhoneVerified: false,
+//     });
+
+//     await newUser.save();
+
+//     await client.messages.create({
+//       body: `Your sankalp sudhi registration OTP is: ${otp}`,
+//       from: variables.TWILIO_NUMBER,
+//       to: user_phone.startsWith("+") ? user_phone : `+${user_phone}`
+//     });
+
+//     res.status(200).json({ message: "OTP sent successfully", user_phone });
+//   } catch (error) {
+//     res.status(500).json({ message: "Failed to send OTP", error });
+//   }
+// };
+
+// exports.verifyOtp = async (req, res) => {
+//   try {
+//     const { user_phone, otp, user_email, user_name, user_password, user_address } = req.body;
+
+//     const user = await userModel.findOne({ user_phone });
+
+//     if (user.user_otp === otp && user.otpExpiresAt && user.otpExpiresAt > new Date()) {
+//       const encryptedPassword = CryptoJS.AES.encrypt(user_password, variables.PASS_KEY).toString();
+
+//       user.user_email = user_email;
+//       user.user_name = user_name;
+//       user.user_password = encryptedPassword;
+//       user.user_address = user_address || "India";
+//       user.isPhoneVerified = true;
+//       user.user_otp = undefined;
+//       user.otpExpiresAt = undefined;
+
+//       await user.save();
+//       return res.status(201).json({ message: "Phone verified & User registered successfully", user: user });
+//     }
+
+//     return res.status(400).json({ message: "Invalid or expired OTP" });
+//   } catch (error) {
+//     res.status(500).json({ message: "OTP verification failed", error: error.message });
+//   }
+// };

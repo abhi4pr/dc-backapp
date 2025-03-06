@@ -26,6 +26,8 @@ router.get("/get_all_users", users.getAllUsers);
 router.put("/update_user", upload.single('user_image'), users.updateUser);
 router.post("/login_user", users.loginUser);
 router.delete("/delete_user", users.deleteUser);
+// router.post("/send_otp", users.sendOtp);
+// router.post("/verify_otp", users.verifyOtp);
 
 router.post("/add_feedback", upload.single('feedback_image'), fileUpload, feedback.addFeedback);
 router.get("/get_single_feedback", feedback.getSingleFeedback);

@@ -33,6 +33,20 @@ const userModel = new mongoose.Schema({
         type: String,
         required: false,
         default: ""
+    },
+    user_otp: {
+        type: String,
+    },
+    otpExpiresAt: {
+        type: Date,
+    },
+    isPhoneVerified: {
+        type: Boolean,
+        default: false
+    },
+    seen_questions: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 
