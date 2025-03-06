@@ -8,7 +8,7 @@ const userProgressModel = new mongoose.Schema({
     },
     checkpoint_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "JourneyCP",
+        ref: "journeyCPsModel",
         required: true
     },
     video_shown: {

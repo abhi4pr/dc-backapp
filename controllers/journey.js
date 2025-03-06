@@ -6,9 +6,8 @@ const variables = require('../variables.js');
 exports.getUserProgress = async (req, res) => {
     try {
         const { userId } = req.params;
-
-        // Get all checkpoints user has interacted with
         const progress = await userProgressModel.find({ user_id: userId }).populate("checkpoint_id");
+        const totalCheckpoints = await journeyCPsModel.find().countDocuments();
 
         // Find the current checkpoint (first one that is not completed)
         let completedCheckpoints = [];
@@ -26,11 +25,12 @@ exports.getUserProgress = async (req, res) => {
         res.status(200).json({
             completed: completedCheckpoints,
             current: currentCheckpoint,
+            total: totalCheckpoints,
             progress: (completedCheckpoints.length / (completedCheckpoints.length + 1)) * 100 || 0
         });
 
     } catch (error) {
-        res.status(500).json({ message: "Error fetching user progress", error });
+        res.status(500).json({ message: "Error fetching user progress", error: error.message });
     }
 };
 
@@ -165,7 +165,7 @@ exports.unLockNextCheckpoint = async (req, res) => {
             return res.status(404).json({ message: "Checkpoint not found" });
         }
 
-        const nextCheckpoint = await JourneyCP.findOne({ cp_order: currentCheckpoint.cp_order + 1 });
+        const nextCheckpoint = await journeyCPsModel.findOne({ cp_order: currentCheckpoint.cp_order + 1 });
 
         if (!nextCheckpoint) {
             return res.json({ message: "No more checkpoints to unlock", nextCheckpoint: null });
