@@ -6,7 +6,7 @@ const CryptoJS = require("crypto-js");
 const { fileUpload } = require('../fileUpload.js');
 const twilio = require("twilio");
 
-const client = twilio(variables.TWILIO_ACCOUNT_SID, variables.TWILIO_AUTH_TOKEN);
+// const client = twilio(variables.TWILIO_ACCOUNT_SID, variables.TWILIO_AUTH_TOKEN);
 
 const encryptPassword = (password) => {
   return CryptoJS.AES.encrypt(password, variables.PASS_KEY).toString();
