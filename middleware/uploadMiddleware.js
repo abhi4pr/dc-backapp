@@ -54,4 +54,5 @@ const fileUpload = async (req, res, next) => {
   }
 };
 
+export { fileUpload };
 export default upload;
