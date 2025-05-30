@@ -9,12 +9,24 @@ import {
   getUserRewards,
 } from "../controllers/rewardController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadMiddleware.js";
+import upload, { fileUpload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.post("/add-reward", authMiddleware, upload.single("image"), addReward);
-router.put("/:id", authMiddleware, upload.single("image"), updateReward);
+router.post(
+  "/add-reward",
+  authMiddleware,
+  upload.single("image"),
+  fileUpload,
+  addReward
+);
+router.put(
+  "/:id",
+  authMiddleware,
+  upload.single("image"),
+  fileUpload,
+  updateReward
+);
 router.delete("/:id", authMiddleware, deleteReward);
 
 router.post("/assign", authMiddleware, assignRewardToUser);

@@ -8,7 +8,7 @@ export const addBook = asyncHandler(async (req, res) => {
 
   if (!req.file) throw new AppError("PDF file is required", 400);
 
-  const pdfPath = `/uploads/${req.file.filename}`;
+  const pdfPath = req.fileUrl;
 
   const newBook = await Book.create({
     name,
@@ -42,7 +42,7 @@ export const updateBook = asyncHandler(async (req, res) => {
   const updates = { name, description, category };
 
   if (req.file) {
-    updates.pdfFile = `/uploads/${req.file.filename}`;
+    updates.pdfFile = req.fileUrl;
   }
 
   const updatedBook = await Book.findByIdAndUpdate(req.params.id, updates, {

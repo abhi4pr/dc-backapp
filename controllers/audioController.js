@@ -48,7 +48,7 @@ export const updateAudio = asyncHandler(async (req, res) => {
   const updates = req.body;
 
   if (req.file) {
-    updates.audioFile = `/uploads/${req.file.filename}`;
+    updates.audioFile = req.fileUrl;
   }
 
   const updatedAudio = await Audio.findByIdAndUpdate(

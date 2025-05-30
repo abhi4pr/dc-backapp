@@ -6,7 +6,7 @@ export const addDietItem = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
   if (!title) throw new AppError("Title is required", 400);
 
-  const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
+  const imagePath = req.fileUrl;
 
   const item = await DietItem.create({
     title,
@@ -30,7 +30,7 @@ export const getDietItemById = asyncHandler(async (req, res) => {
 
 export const updateDietItem = asyncHandler(async (req, res) => {
   const updates = req.body;
-  if (req.file) updates.image = `/uploads/${req.file.filename}`;
+  if (req.file) updates.image = req.fileUrl;
 
   const updated = await DietItem.findByIdAndUpdate(
     req.params.id,

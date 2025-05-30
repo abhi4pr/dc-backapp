@@ -26,7 +26,7 @@ export const updateUser = asyncHandler(async (req, res) => {
   }
 
   if (req.file) {
-    const imagePath = `/uploads/${req.file.filename}`;
+    const imagePath = req.fileUrl;
     updates.profileImage = imagePath;
   }
 

@@ -10,7 +10,7 @@ export const addPost = asyncHandler(async (req, res) => {
     throw new AppError("Title and category are required", 400);
   }
 
-  const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
+  const imagePath = req.fileUrl;
 
   const post = await Post.create({
     title,
@@ -47,7 +47,7 @@ export const updatePost = asyncHandler(async (req, res) => {
   const updates = req.body;
 
   if (req.file) {
-    updates.images = `/uploads/${req.file.filename}`;
+    updates.images = req.fileUrl;
   }
 
   const updatedPost = await Post.findByIdAndUpdate(

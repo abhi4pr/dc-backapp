@@ -6,7 +6,7 @@ import AppError from "../utils/AppError.js";
 // ADMIN: Create reward
 export const addReward = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : null;
+  const image = req.file ? req.fileUrl : null;
   const reward = await Reward.create({ name, description, image });
   res.status(201).json(reward);
 });
@@ -27,7 +27,7 @@ export const getRewardById = asyncHandler(async (req, res) => {
 // UPDATE reward
 export const updateReward = asyncHandler(async (req, res) => {
   const updates = req.body;
-  if (req.file) updates.image = `/uploads/${req.file.filename}`;
+  if (req.file) updates.image = req.fileUrl;
 
   const reward = await Reward.findByIdAndUpdate(req.params.id, updates, {
     new: true,

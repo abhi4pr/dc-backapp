@@ -10,7 +10,7 @@ export const addJournal = asyncHandler(async (req, res) => {
     throw new AppError("Title and journal_date are required", 400);
   }
 
-  const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
+  const imagePath = req.fileUrl;
 
   const journal = await Journal.create({
     title,
@@ -52,7 +52,7 @@ export const updateJournal = asyncHandler(async (req, res) => {
   const updates = req.body;
 
   if (req.file) {
-    updates.image = `/uploads/${req.file.filename}`;
+    updates.image = req.fileUrl;
   }
 
   const updatedJournal = await Journal.findOneAndUpdate(

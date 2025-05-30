@@ -6,7 +6,7 @@ import {
   deleteUser,
 } from "../controllers/userController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadMiddleware.js";
+import upload, { fileUpload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -15,6 +15,7 @@ router.put(
   "/update-profile",
   authMiddleware,
   upload.single("profileImage"),
+  fileUpload,
   updateUser
 );
 router.get("/get_all_users", authMiddleware, getAllUsers);

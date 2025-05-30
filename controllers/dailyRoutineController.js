@@ -7,7 +7,7 @@ export const addRoutineItem = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
   if (!title) throw new AppError("Title is required", 400);
 
-  const imagePath = req.file ? `/uploads/${req.file.filename}` : "";
+  const imagePath = req.fileUrl;
 
   const item = await DailyRoutineItem.create({
     title,
@@ -34,7 +34,7 @@ export const getRoutineItemById = asyncHandler(async (req, res) => {
 // Update routine item
 export const updateRoutineItem = asyncHandler(async (req, res) => {
   const updates = req.body;
-  if (req.file) updates.image = `/uploads/${req.file.filename}`;
+  if (req.file) updates.image = req.fileUrl;
 
   const updated = await DailyRoutineItem.findByIdAndUpdate(
     req.params.id,

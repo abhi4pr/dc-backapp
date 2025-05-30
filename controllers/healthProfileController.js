@@ -6,10 +6,8 @@ export const addHealthProfile = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const body = req.body;
 
-  const reports =
-    req.files?.reports?.map((file) => `/uploads/${file.filename}`) || [];
-  const doctorFiles =
-    req.files?.doctorFiles?.map((file) => `/uploads/${file.filename}`) || [];
+  const reports = req.files?.reports?.map((file) => req.fileUrl) || [];
+  const doctorFiles = req.files?.doctorFiles?.map((file) => req.fileUrl) || [];
 
   const newProfile = new HealthProfile({
     ...body,
@@ -31,10 +29,8 @@ export const updateHealthProfile = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const body = req.body;
 
-  const reports =
-    req.files?.reports?.map((file) => `/uploads/${file.filename}`) || [];
-  const doctorFiles =
-    req.files?.doctorFiles?.map((file) => `/uploads/${file.filename}`) || [];
+  const reports = req.files?.reports?.map((file) => req.fileUrl) || [];
+  const doctorFiles = req.files?.doctorFiles?.map((file) => req.fileUrl) || [];
 
   const updated = await HealthProfile.findOneAndUpdate(
     { _id: profileId, user: userId },
