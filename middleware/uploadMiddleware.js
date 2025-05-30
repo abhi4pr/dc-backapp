@@ -16,6 +16,8 @@ const allowedFormats = [
   "image/png",
   "audio/mp3",
   "video/mp4",
+  "audio/mpeg",
+  "application/pdf",
 ];
 
 const fileFilter = (req, file, cb) => {
