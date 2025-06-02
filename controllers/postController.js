@@ -10,13 +10,17 @@ export const addPost = asyncHandler(async (req, res) => {
     throw new AppError("Title and category are required", 400);
   }
 
-  const imagePath = req.fileUrl;
+  const imagePaths = req.files?.map((file) => file.path) || []; // Assuming `req.files` contains an array of uploaded files
+
+  if (imagePaths.length > 3) {
+    throw new AppError("You can upload a maximum of 3 images", 400);
+  }
 
   const post = await Post.create({
     title,
     content,
     category,
-    images: imagePath,
+    images: imagePaths,
     user: req.user.id,
   });
 

@@ -26,6 +26,8 @@ import bookRoutes from "./routes/book.js";
 import rewardRoutes from "./routes/reward.js";
 import moodRoutes from "./routes/mood.js";
 import healthProfileRoutes from "./routes/healthProfile.js";
+import questionRoutes from "./routes/question.js";
+import feedbackRoutes from "./routes/feedback.js";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger/swaggerConfig.js";
@@ -76,6 +78,8 @@ app.use("/api/books", bookRoutes);
 app.use("/api/rewards", rewardRoutes);
 app.use("/api/moods", moodRoutes);
 app.use("/api/healthprofiles", healthProfileRoutes);
+app.use("/api/questions", questionRoutes);
+app.use("/api/feedbacks", feedbackRoutes);
 
 // Error Handler
 app.use(errorHandler);
