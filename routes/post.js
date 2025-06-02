@@ -14,7 +14,7 @@ const router = express.Router();
 router.post(
   "/add-post",
   authMiddleware,
-  upload.single("images"),
+  upload.array("images", 3),
   fileUpload,
   addPost
 );
@@ -23,7 +23,7 @@ router.get("/:id", authMiddleware, getPostById);
 router.put(
   "/:id",
   authMiddleware,
-  upload.single("images"),
+  upload.array("images", 3),
   fileUpload,
   updatePost
 );

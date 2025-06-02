@@ -65,8 +65,14 @@ export const getPostById = asyncHandler(async (req, res) => {
 export const updatePost = asyncHandler(async (req, res) => {
   const updates = req.body;
 
-  if (req.file) {
-    updates.images = req.fileUrl;
+  if (req.files) {
+    const imagePaths = req.files.map((file) => file.path); // Assuming `req.files` contains an array of uploaded files
+
+    if (imagePaths.length > 3) {
+      throw new AppError("You can upload a maximum of 3 images", 400);
+    }
+
+    updates.images = imagePaths;
   }
 
   const updatedPost = await Post.findByIdAndUpdate(
