@@ -26,10 +26,22 @@ export const addAudio = asyncHandler(async (req, res) => {
 
 // Get all audios
 export const getAllAudios = asyncHandler(async (req, res) => {
-  const audios = await Audio.find().sort({ createdAt: -1 });
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
+
+  const audios = await Audio.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalAudios = await Audio.countDocuments();
 
   res.status(200).json({
     count: audios.length,
+    total: totalAudios,
+    page,
+    totalPages: Math.ceil(totalAudios / limit),
     audios,
   });
 });

@@ -27,10 +27,22 @@ export const addMedicine = asyncHandler(async (req, res) => {
 
 // Get all medicines
 export const getAllMedicines = asyncHandler(async (req, res) => {
-  const medicines = await Medicine.find();
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
+
+  const medicines = await Medicine.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalMedicines = await Medicine.countDocuments();
 
   res.status(200).json({
     count: medicines.length,
+    total: totalMedicines,
+    page,
+    totalPages: Math.ceil(totalMedicines / limit),
     medicines,
   });
 });

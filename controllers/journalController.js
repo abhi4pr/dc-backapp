@@ -26,13 +26,26 @@ export const addJournal = asyncHandler(async (req, res) => {
   });
 });
 
-// Get all journal entries for logged in user
+// Get all journal entries for logged in user with pagination
 export const getAllJournals = asyncHandler(async (req, res) => {
-  const journals = await Journal.find({ user: req.user.id }).sort({
-    journal_date: -1,
-  });
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
 
-  res.status(200).json({ count: journals.length, journals });
+  const journals = await Journal.find({ user: req.user.id })
+    .sort({ journal_date: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalJournals = await Journal.countDocuments({ user: req.user.id });
+
+  res.status(200).json({
+    count: journals.length,
+    total: totalJournals,
+    page,
+    totalPages: Math.ceil(totalJournals / limit),
+    journals,
+  });
 });
 
 // Get journal by ID (only if belongs to user)

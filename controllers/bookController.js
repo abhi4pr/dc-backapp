@@ -25,8 +25,24 @@ export const addBook = asyncHandler(async (req, res) => {
 
 // READ ALL
 export const getAllBooks = asyncHandler(async (req, res) => {
-  const books = await Book.find();
-  res.status(200).json(books);
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
+
+  const books = await Book.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalBooks = await Book.countDocuments();
+
+  res.status(200).json({
+    count: books.length,
+    total: totalBooks,
+    page,
+    totalPages: Math.ceil(totalBooks / limit),
+    books,
+  });
 });
 
 // READ ONE

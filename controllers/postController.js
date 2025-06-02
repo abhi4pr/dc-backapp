@@ -28,9 +28,24 @@ export const addPost = asyncHandler(async (req, res) => {
 
 // Get all posts
 export const getAllPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find();
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
 
-  res.status(200).json({ count: posts.length, posts });
+  const posts = await Post.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalPosts = await Post.countDocuments();
+
+  res.status(200).json({
+    count: posts.length,
+    total: totalPosts,
+    page,
+    totalPages: Math.ceil(totalPosts / limit),
+    posts,
+  });
 });
 
 // Get post by ID

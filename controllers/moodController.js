@@ -31,8 +31,25 @@ export const submitMood = asyncHandler(async (req, res) => {
 // Get all moods for a user
 export const getMyMoods = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const moods = await Mood.find({ user: userId }).sort({ date: -1 });
-  res.status(200).json(moods);
+
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
+
+  const moods = await Mood.find({ user: userId })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalMoods = await Mood.countDocuments();
+
+  res.status(200).json({
+    count: moods.length,
+    total: totalMoods,
+    page,
+    totalPages: Math.ceil(totalMoods / limit),
+    moods,
+  });
 });
 
 // Get single mood by ID
