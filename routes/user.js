@@ -18,7 +18,7 @@ router.put(
   fileUpload,
   updateUser
 );
-router.get("/get_all_users", authMiddleware, getAllUsers);
+router.get("/", authMiddleware, getAllUsers);
 router.delete("/:id", authMiddleware, deleteUser);
 
 export default router;

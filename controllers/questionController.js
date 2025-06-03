@@ -4,7 +4,7 @@ import AppError from "../utils/AppError.js";
 
 // CREATE
 export const addQuestion = asyncHandler(async (req, res) => {
-  const { question, options, extra, sequence } = req.body;
+  const { question, options, category, sequence } = req.body;
 
   if (
     !question ||
@@ -22,7 +22,7 @@ export const addQuestion = asyncHandler(async (req, res) => {
   const newQuestion = await Question.create({
     question,
     options,
-    extra,
+    category,
     sequence,
   });
 
@@ -64,12 +64,12 @@ export const getQuestionById = asyncHandler(async (req, res) => {
 
 // UPDATE
 export const updateQuestion = asyncHandler(async (req, res) => {
-  const { question, options, extra, sequence } = req.body;
+  const { question, options, category, sequence } = req.body;
 
   const updates = {};
   if (question !== undefined) updates.question = question;
   if (options !== undefined) updates.options = options;
-  if (extra !== undefined) updates.extra = extra;
+  if (category !== undefined) updates.category = category;
   if (sequence !== undefined) updates.sequence = sequence;
 
   const updatedQuestion = await Question.findByIdAndUpdate(

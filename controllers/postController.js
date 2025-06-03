@@ -16,9 +16,6 @@ export const addPost = asyncHandler(async (req, res) => {
     throw new AppError("You can upload a maximum of 3 images", 400);
   }
 
-  console.log("files:", req.files);
-  console.log("Image paths:", imagePaths);
-
   const post = await Post.create({
     title,
     content,

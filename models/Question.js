@@ -12,7 +12,7 @@ const questionSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
-    extra: {
+    category: {
       type: String,
       required: false,
       trim: true,

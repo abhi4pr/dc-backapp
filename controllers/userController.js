@@ -45,10 +45,22 @@ export const updateUser = asyncHandler(async (req, res) => {
 });
 
 export const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find().select("-password");
+  const page = parseInt(req.query.page) || 1; // Default to page 1
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+  const skip = (page - 1) * limit;
+
+  const users = await User.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalUsers = await User.find().select("-password");
 
   res.status(200).json({
     count: users.length,
+    total: totalUsers,
+    page,
+    totalPages: Math.ceil(totalUsers / limit),
     users,
   });
 });
