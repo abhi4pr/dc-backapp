@@ -56,5 +56,30 @@ const fileUpload = async (req, res, next) => {
   }
 };
 
-export { fileUpload };
+const fileUploads = async (req, res, next) => {
+  try {
+    const files = req.files || (req.file ? [req.file] : []);
+
+    if (files.length === 0) {
+      return next();
+    }
+
+    const uploadPromises = files.map((file) =>
+      imagekit.upload({
+        file: file.buffer,
+        fileName: `${Date.now()}-${file.originalname}`,
+        folder: "/",
+      })
+    );
+
+    const uploadResults = await Promise.all(uploadPromises);
+    req.fileUrls = uploadResults.map((result) => result.url);
+    next();
+  } catch (error) {
+    console.error("Failed to upload files to ImageKit:", error);
+    return res.status(500).send("Failed to upload files");
+  }
+};
+
+export { fileUpload, fileUploads };
 export default upload;

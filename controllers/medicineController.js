@@ -9,7 +9,7 @@ export const addMedicine = asyncHandler(async (req, res) => {
     throw new AppError("Required fields are missing", 400);
   }
 
-  const imagePaths = req.files?.map((file) => req.fileUrl) || [];
+  const imagePaths = req.fileUrls || [];
 
   const medicine = await Medicine.create({
     name,
@@ -72,7 +72,7 @@ export const updateMedicine = asyncHandler(async (req, res) => {
   const updates = req.body;
 
   if (req.files && req.files.length > 0) {
-    updates.images = req.files.map((file) => req.fileUrl);
+    updates.images = req.fileUrls || [];
   }
 
   const updatedMedicine = await Medicine.findByIdAndUpdate(

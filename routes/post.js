@@ -7,7 +7,7 @@ import {
   deletePost,
 } from "../controllers/postController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import upload, { fileUpload } from "../middleware/uploadMiddleware.js";
+import upload, { fileUploads } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.post(
   "/add-post",
   authMiddleware,
   upload.array("images", 3),
-  fileUpload,
+  fileUploads,
   addPost
 );
 router.get("/", authMiddleware, getAllPosts);
@@ -24,7 +24,7 @@ router.put(
   "/:id",
   authMiddleware,
   upload.array("images", 3),
-  fileUpload,
+  fileUploads,
   updatePost
 );
 router.delete("/:id", authMiddleware, deletePost);
