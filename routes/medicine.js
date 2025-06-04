@@ -26,7 +26,7 @@ router.put(
   fileUploads,
   updateMedicine
 );
-router.get("/get_all_medicines", authMiddleware, getAllMedicines);
+router.get("/", authMiddleware, getAllMedicines);
 router.delete("/:id", authMiddleware, deleteMedicine);
 
 export default router;
