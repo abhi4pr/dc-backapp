@@ -3,7 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import AppError from "../utils/AppError.js";
 
 export const addDietItem = asyncHandler(async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, category, calories } = req.body;
   if (!title) throw new AppError("Title is required", 400);
 
   const imagePath = req.fileUrl;
@@ -12,14 +12,34 @@ export const addDietItem = asyncHandler(async (req, res) => {
     title,
     description,
     image: imagePath,
+    category,
+    calories
   });
 
   res.status(201).json({ message: "Diet item added", item });
 });
 
 export const getAllDietItems = asyncHandler(async (req, res) => {
-  const items = await DietItem.find().sort({ createdAt: -1 });
-  res.status(200).json({ count: items.length, items });
+  // const items = await DietItem.find().sort({ createdAt: -1 });
+  // res.status(200).json({ count: items.length, items });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const diets = await DietItem.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const totalDiets = await DietItem.countDocuments();
+
+  res.status(200).json({
+    count: diets.length,
+    total: totalDiets,
+    page,
+    totalPages: Math.ceil(totalDiets / limit),
+    diets,
+  });
 });
 
 export const getDietItemById = asyncHandler(async (req, res) => {

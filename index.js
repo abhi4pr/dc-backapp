@@ -29,6 +29,7 @@ import healthProfileRoutes from "./routes/healthProfile.js";
 import questionRoutes from "./routes/question.js";
 import feedbackRoutes from "./routes/feedback.js";
 import orderRoutes from "./routes/order.js";
+import videoRoutes from "./routes/video.js";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger/swaggerConfig.js";
@@ -82,6 +83,7 @@ app.use("/api/healthprofiles", healthProfileRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/videos", videoRoutes)
 
 // Error Handler
 app.use(errorHandler);

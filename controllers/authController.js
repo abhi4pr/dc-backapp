@@ -10,7 +10,7 @@ const signup = async (req, res) => {
   const { error } = signupSchema.validate(req.body);
   if (error) throw new AppError(error.details[0].message, 400);
 
-  const { name, email, password } = req.body;
+  const { name, email, password, phone, address } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new AppError("Email already registered", 409);
