@@ -31,6 +31,7 @@ import feedbackRoutes from "./routes/feedback.js";
 import orderRoutes from "./routes/order.js";
 import videoRoutes from "./routes/video.js";
 import chatRoutes from "./routes/chat.js";
+import uploadRoutes from "./routes/upload.js";
 import levelRoutes from "./routes/level.js";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
@@ -95,6 +96,7 @@ app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/videos", videoRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/upload", uploadRoutes);
 app.use("/api/levels", levelRoutes);
 
 // Error Handler

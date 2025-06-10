@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const optionSchema = new mongoose.Schema({
   text: { type: String, required: true },
   value: { type: String },
+  image: { type: String }, // Optional image with option
   nextStepId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Step",
@@ -12,6 +13,7 @@ const optionSchema = new mongoose.Schema({
 
 const stepSchema = new mongoose.Schema(
   {
+    sequenceOrder: { type: Number }, // To maintain flow order
     type: {
       type: String,
       required: true,
@@ -23,17 +25,21 @@ const stepSchema = new mongoose.Schema(
         "image",
         "result",
         "instruction",
+        "avatar",
+        "communication",
       ],
     },
     content: {
-      text: { type: String },
-      src: { type: String },
-      sound: { type: String },
-      speaker: { type: String },
-      avatar: { type: String },
-      dialogues: [{ type: String }],
-      options: [optionSchema],
+      text: { type: String }, // For quote, dialogue, question, instruction
+      src: { type: String }, // For video/image/audio
+      sound: { type: String }, // For audio effects
+      speaker: { type: String }, // For dialogue speaker name
+      avatar: { type: String }, // For avatar image
+      dialogues: [{ type: String }], // For multi-line conversations
+      options: [optionSchema], // For question-type steps
     },
+    isSkippable: { type: Boolean, default: false },
+    isMandatory: { type: Boolean, default: true },
   },
   { _id: false }
 );
@@ -61,8 +67,8 @@ const levelSchema = new mongoose.Schema(
     steps: [stepSchema],
     tasks: [taskSchema],
     rewards: {
-      unlocks: [{ type: String }],
-      message: { type: String },
+      unlocks: [{ type: String }], // e.g. ['diary', 'mirror', 'replay']
+      message: { type: String }, // e.g. 'Congratulations, you cleared Level 1'
     },
   },
   { timestamps: true }
