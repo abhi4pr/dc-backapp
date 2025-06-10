@@ -30,13 +30,23 @@ import questionRoutes from "./routes/question.js";
 import feedbackRoutes from "./routes/feedback.js";
 import orderRoutes from "./routes/order.js";
 import videoRoutes from "./routes/video.js";
+import chatRoutes from "./routes/chat.js";
+import levelRoutes from "./routes/level.js";
 import path from "path";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger/swaggerConfig.js";
+import http from "http";
+import { Server } from "socket.io";
+import chatSocket from "./sockets/chat.js";
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "*" },
+});
+chatSocket(io);
 
 // Middleware
 app.use(cors());
@@ -83,7 +93,9 @@ app.use("/api/healthprofiles", healthProfileRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/orders", orderRoutes);
-app.use("/api/videos", videoRoutes)
+app.use("/api/videos", videoRoutes);
+app.use("/api/chats", chatRoutes);
+app.use("/api/levels", levelRoutes);
 
 // Error Handler
 app.use(errorHandler);
