@@ -10,7 +10,7 @@ const imagekit = new ImageKit({
 });
 // Send a message
 export const sendMessage = async (req, res) => {
-  const { senderId, receiverId, text, image } = req.body;
+  const { sender, receiver, message, image } = req.body;
 
   try {
     let imageUrl = null;
@@ -25,10 +25,10 @@ export const sendMessage = async (req, res) => {
     }
 
     const chat = new Chat({
-      sender: senderId,
-      receiver: receiverId,
-      message: text || "",
-      image: imageUrl,
+      sender: sender,
+      receiver: receiver,
+      message: message || "",
+      image: imageUrl || "",
     });
 
     await chat.save();
@@ -44,7 +44,7 @@ export const sendMessage = async (req, res) => {
 
     // Send to receiver using socket
     const io = req.app.get("io");
-    io.to(receiverId).emit("receive_message", messageData);
+    io.to(receiver).emit("receive_message", messageData);
 
     res.status(201).json(messageData);
   } catch (error) {
