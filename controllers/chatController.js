@@ -1,33 +1,92 @@
 import Chat from "../models/Chat.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import AppError from "../utils/AppError.js";
+import ImageKit from "imagekit";
 
-export const getChats = asyncHandler(async (req, res) => {
-  const { userId, otherUserId } = req.params;
-  const chats = await Chat.find({
-    $or: [
-      { sender: userId, receiver: otherUserId },
-      { sender: otherUserId, receiver: userId },
-    ],
-  }).sort({ createdAt: 1 });
-
-  if (!chats) throw new AppError("chat not found", 404);
-
-  res.status(200).json({ chats });
+const imagekit = new ImageKit({
+  publicKey: "public_CjgzM0q1BFn6o5gOVSxw3CJFke4=",
+  privateKey: "private_EQhKcvatje0axi3xWLpoXL6s2+0=",
+  urlEndpoint: "https://ik.imagekit.io/cun839umq",
 });
+// Send a message
+export const sendMessage = async (req, res) => {
+  const { senderId, receiverId, text, image } = req.body;
 
-export const deleteChat = asyncHandler(async (req, res) => {
-  const { userId, otherUserId } = req.params;
-  const deleted = await Chat.deleteMany({
-    $or: [
-      { sender: userId, receiver: otherUserId },
-      { sender: otherUserId, receiver: userId },
-    ],
-  });
+  try {
+    let imageUrl = null;
 
-  if (!deleted) throw new AppError("chat not found", 404);
+    if (image) {
+      const uploadRes = await imagekit.upload({
+        file: image,
+        fileName: `chat_${Date.now()}.jpg`,
+        folder: "/chats",
+      });
+      imageUrl = uploadRes.url;
+    }
 
-  res.status(200).json({
-    message: "chat deleted successfully",
-  });
-});
+    const chat = new Chat({
+      sender: senderId,
+      receiver: receiverId,
+      message: text || "",
+      image: imageUrl,
+    });
+
+    await chat.save();
+
+    const messageData = {
+      _id: chat._id,
+      sender: chat.sender,
+      receiver: chat.receiver,
+      message: chat.message,
+      image: chat.image,
+      createdAt: chat.createdAt,
+    };
+
+    // Send to receiver using socket
+    const io = req.app.get("io");
+    io.to(receiverId).emit("receive_message", messageData);
+
+    res.status(201).json(messageData);
+  } catch (error) {
+    console.error("Send message error:", error);
+    res.status(500).json({ error: "Failed to send message" });
+  }
+};
+
+// Get chat history between 2 users
+export const getMessages = async (req, res) => {
+  const { userId, otherUserId } = req.query;
+
+  try {
+    const messages = await Chat.find({
+      $or: [
+        { sender: userId, receiver: otherUserId },
+        { sender: otherUserId, receiver: userId },
+      ],
+    }).sort({ createdAt: 1 });
+
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error("Get messages error:", error);
+    res.status(500).json({ error: "Failed to load messages" });
+  }
+};
+
+// Clear chat between two users
+export const clearChat = async (req, res) => {
+  const { userId, otherUserId } = req.query;
+
+  try {
+    await Chat.deleteMany({
+      $or: [
+        { sender: userId, receiver: otherUserId },
+        { sender: otherUserId, receiver: userId },
+      ],
+    });
+
+    res.status(200).json({ message: "Chat cleared successfully" });
+  } catch (error) {
+    console.error("Clear chat error:", error);
+    res.status(500).json({ error: "Failed to clear chat" });
+  }
+};

@@ -1,11 +1,15 @@
 import express from "express";
-import { getChats, deleteChat } from "../controllers/chatController.js";
+import {
+  sendMessage,
+  getMessages,
+  clearChat,
+} from "../controllers/chatController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import upload, { fileUpload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.get("/:userId/:otherUserId", authMiddleware, getChats);
-router.delete("/:userId/:otherUserId", authMiddleware, deleteChat);
+router.post("/messages", authMiddleware, sendMessage);
+router.get("/messages", authMiddleware, getMessages);
+router.delete("/messages", authMiddleware, clearChat);
 
 export default router;

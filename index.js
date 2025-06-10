@@ -47,7 +47,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "*" },
 });
-chatSocket(io);
+// chatSocket(io);
+app.set("io", io); // Make io available in routes
 
 // Middleware
 app.use(cors());
