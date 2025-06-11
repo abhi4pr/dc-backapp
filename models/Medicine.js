@@ -25,6 +25,15 @@ const medicineSchema = new mongoose.Schema(
     category: {
       type: String,
       trim: true,
+      default: "General",
+      enum: [
+        "General",
+        "Homeopathy Remedies",
+        "Ayurvedic Formulas",
+        "Freedom In-House Combos Emotional Healing Kits",
+        "Detox Kits",
+        "Supplementary Support (Oils, Tonics, Teas)",
+      ],
     },
   },
   { timestamps: true }

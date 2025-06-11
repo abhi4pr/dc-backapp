@@ -39,7 +39,8 @@ export const getAllPosts = asyncHandler(async (req, res) => {
   const posts = await Post.find()
     .sort({ createdAt: -1 })
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .populate("user", "-password");
 
   const totalPosts = await Post.countDocuments();
 
@@ -54,7 +55,10 @@ export const getAllPosts = asyncHandler(async (req, res) => {
 
 // Get post by ID
 export const getPostById = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.id);
+  const post = await Post.findById(req.params.id).populate(
+    "user",
+    "-password -__v"
+  );
 
   if (!post) throw new AppError("Post not found", 404);
 
@@ -66,7 +70,7 @@ export const updatePost = asyncHandler(async (req, res) => {
   const updates = req.body;
 
   if (req.files) {
-    const imagePaths = req.fileUrls || []; // Assuming `req.files` contains an array of uploaded files
+    const imagePaths = req.fileUrls || [];
 
     if (imagePaths.length > 3) {
       throw new AppError("You can upload a maximum of 3 images", 400);
