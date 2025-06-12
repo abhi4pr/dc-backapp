@@ -1,4 +1,4 @@
-import { required } from "joi";
+// import { required } from "joi";
 import mongoose from "mongoose";
 
 const journalSchema = new mongoose.Schema(
