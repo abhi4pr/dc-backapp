@@ -14,10 +14,12 @@ const sleepSchema = new mongoose.Schema(
     sleepTime: {
       type: String,
       required: true,
+      default: "23:00"
     },
     wakeupTime: {
       type: String, // e.g. "06:30"
       required: true,
+      default: "07:00"
     },
     alarm: {
       type: Boolean,
@@ -36,6 +38,7 @@ const sleepSchema = new mongoose.Schema(
     totalSleepTime: {
       type: String, // e.g. "08:00"
       required: true,
+      default: "08:00"
     },
   },
   { timestamps: true }

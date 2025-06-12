@@ -17,6 +17,11 @@ const videoSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    videoUrl: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     category: {
       type: String,
       enum: [

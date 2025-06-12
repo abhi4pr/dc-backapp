@@ -52,6 +52,17 @@ export const getMyMoods = asyncHandler(async (req, res) => {
   });
 });
 
+// Get mood for a specific user and date
+export const getMoodByUserAndDate = asyncHandler(async (req, res) => {
+  const { userId, date } = req.params;
+
+  const mood = await Mood.findOne({ user: userId, date });
+
+  if (!mood) throw new AppError("Mood not found", 404);
+
+  res.status(200).json({ mood });
+});
+
 // Get single mood by ID
 export const getMoodById = asyncHandler(async (req, res) => {
   const mood = await Mood.findById(req.params.id);

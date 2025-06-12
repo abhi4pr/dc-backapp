@@ -4,7 +4,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 // Add video
 export const addVideo = asyncHandler(async (req, res) => {
-    const { title, description, category } = req.body;
+    const { title, description, category, videoUrl } = req.body;
 
     if (!title) throw new AppError("Title is required", 400);
     if (!req.file) throw new AppError("Video file is required", 400);
@@ -15,6 +15,7 @@ export const addVideo = asyncHandler(async (req, res) => {
         title,
         description,
         category,
+        videoUrl,
         videoFile: videoPath,
     });
 

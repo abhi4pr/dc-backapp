@@ -13,9 +13,9 @@ const moodSchema = new mongoose.Schema(
       //enum: ["happy", "sad", "angry", "anxious", "calm", "excited", "tired", "neutral"], // customizable
     },
     intensity: {
-      type: Number,
-      min: 1,
-      max: 10,
+      type: String,
+      // min: 1,
+      // max: 10,
       required: true,
     },
     reason: {
@@ -28,7 +28,7 @@ const moodSchema = new mongoose.Schema(
     },
     date: {
       type: String, // Use string like "2025-05-28" to ensure uniqueness per day
-      required: true,
+      required: false,
     },
   },
   { timestamps: true }

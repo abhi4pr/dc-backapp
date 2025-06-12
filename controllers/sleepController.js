@@ -63,9 +63,9 @@ export const addSleep = asyncHandler(async (req, res) => {
 
 // Upsert sleep record for a specific date (overwrite if exists)
 export const upsertSleep = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
+  const { userId, date } = req.params; // extracting from URL params
+
   const {
-    date,
     sleepTime,
     wakeupTime,
     alarm,
@@ -74,6 +74,11 @@ export const upsertSleep = asyncHandler(async (req, res) => {
     daySleepTime,
     totalSleepTime,
   } = req.body;
+
+  if (!userId || !date) {
+    res.status(400);
+    throw new Error("Missing userId or date in URL parameters");
+  }
 
   const sleep = await Sleep.findOneAndUpdate(
     { user: userId, date },
@@ -91,10 +96,7 @@ export const upsertSleep = asyncHandler(async (req, res) => {
     { new: true, upsert: true, runValidators: true }
   );
 
-  res.status(200).json({
-    message: "Sleep record updated",
-    sleep,
-  });
+  res.status(200).json(sleep);
 });
 
 // Get all sleep records (admin/analytics)
@@ -105,6 +107,16 @@ export const getAllSleepRecords = asyncHandler(async (req, res) => {
     count: records.length,
     records,
   });
+});
+
+export const getSleepByUserAndDate = asyncHandler(async (req, res) => {
+  const { userId, date } = req.params;
+
+  const sleep = await Sleep.findOne({ user: userId, date });
+
+  if (!sleep) throw new AppError("Sleep record not found", 404);
+
+  res.status(200).json({ sleep });
 });
 
 // Get sleep records for specific user
