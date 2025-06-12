@@ -3,6 +3,7 @@ import {
   addJournal,
   getAllJournals,
   getJournalById,
+  getSingleJournalByDate,
   updateJournal,
   deleteJournal,
 } from "../controllers/journalController.js";
@@ -12,7 +13,7 @@ import upload, { fileUpload } from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 router.post(
-  "/add-journal",
+  "/add_journal",
   authMiddleware,
   upload.single("image"),
   fileUpload,
@@ -20,6 +21,11 @@ router.post(
 );
 router.get("/", authMiddleware, getAllJournals);
 router.get("/:id", authMiddleware, getJournalById);
+router.get(
+  "/get_single_journal_by_date/:userId",
+  authMiddleware,
+  getSingleJournalByDate
+);
 router.put(
   "/:id",
   authMiddleware,

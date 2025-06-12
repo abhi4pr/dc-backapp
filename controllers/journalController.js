@@ -4,7 +4,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 // Add journal entry
 export const addJournal = asyncHandler(async (req, res) => {
-  const { title, content, journal_date } = req.body;
+  const { title, content, journal_date, emoji } = req.body;
 
   if (!title || !journal_date) {
     throw new AppError("Title and journal_date are required", 400);
@@ -60,6 +60,32 @@ export const getJournalById = asyncHandler(async (req, res) => {
   res.status(200).json({ journal });
 });
 
+export const getSingleJournalByDate = asyncHandler(async (req, res) => {
+  const { journal_date } = req.query;
+  const { userId } = req.params;
+
+  if (!journal_date) {
+    throw new AppError("journal_date is required", 400);
+  }
+
+  // Create start and end of the day in UTC
+  const start = new Date(journal_date);
+  start.setUTCHours(0, 0, 0, 0);
+  const end = new Date(journal_date);
+  end.setUTCHours(23, 59, 59, 999);
+
+  console.log("Querying for:", { start, end, userId });
+
+  const journal = await Journal.findOne({
+    user: userId,
+    journal_date: { $gte: start, $lte: end },
+  });
+
+  if (!journal) throw new AppError("Journal not found", 404);
+
+  res.status(200).json({ journal });
+});
+
 // Update journal entry (only if belongs to user)
 export const updateJournal = asyncHandler(async (req, res) => {
   const updates = req.body;
@@ -68,8 +94,8 @@ export const updateJournal = asyncHandler(async (req, res) => {
     updates.image = req.fileUrl;
   }
 
-  const updatedJournal = await Journal.findOneAndUpdate(
-    { _id: req.params.id, user: req.user.id },
+  const updatedJournal = await Journal.findByIdAndUpdate(
+    req.params.id,
     { $set: updates },
     { new: true, runValidators: true }
   );

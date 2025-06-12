@@ -1,3 +1,4 @@
+import { required } from "joi";
 import mongoose from "mongoose";
 
 const journalSchema = new mongoose.Schema(
@@ -11,6 +12,10 @@ const journalSchema = new mongoose.Schema(
     content: {
       type: String,
       trim: true,
+    },
+    emoji: {
+      type: String,
+      required: false,
     },
     journal_date: {
       type: Date,
