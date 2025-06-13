@@ -7,15 +7,15 @@ const savingSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    date: {
+      type: String,
+      required: false,
+    },
     cigarette: {
       type: Boolean,
       default: false,
     },
     dailyCigaretteCost: {
-      type: Number,
-      default: 0,
-    },
-    totalCigaretteSaving: {
       type: Number,
       default: 0,
     },
@@ -27,19 +27,11 @@ const savingSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    totalAlcoholSaving: {
-      type: Number,
-      default: 0,
-    },
     weed: {
       type: Boolean,
       default: false,
     },
     dailyWeedCost: {
-      type: Number,
-      default: 0,
-    },
-    totalWeedSaving: {
       type: Number,
       default: 0,
     },

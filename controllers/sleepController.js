@@ -2,27 +2,6 @@ import Sleep from "../models/Sleep.js";
 import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-function calculateSleepDuration(sleepTime, wakeupTime) {
-  const [sleepHour, sleepMinute] = sleepTime.split(":").map(Number);
-  const [wakeHour, wakeMinute] = wakeupTime.split(":").map(Number);
-
-  const sleepDate = new Date();
-  sleepDate.setHours(sleepHour, sleepMinute, 0);
-
-  const wakeDate = new Date();
-  wakeDate.setHours(wakeHour, wakeMinute, 0);
-  if (wakeDate <= sleepDate) wakeDate.setDate(wakeDate.getDate() + 1);
-
-  const diffMs = wakeDate - sleepDate;
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
-
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-    2,
-    "0"
-  )}`;
-}
-
 // const totalSleepTime = calculateSleepDuration(sleepTime, wakeupTime);
 
 // Add a new sleep record (only if not already exists for user & date)
@@ -61,11 +40,21 @@ export const addSleep = asyncHandler(async (req, res) => {
   });
 });
 
+// Helper to calculate total sleep duration in minutes
+function calculateSleepDuration(sleepTime, wakeupTime) {
+  if (!sleepTime || !wakeupTime) return null;
+  const sleep = new Date(sleepTime);
+  const wake = new Date(wakeupTime);
+  let diff = (wake - sleep) / (1000 * 60); // difference in minutes
+  if (diff < 0) diff += 24 * 60; // handle overnight sleep
+  return diff;
+}
+
 // Upsert sleep record for a specific date (overwrite if exists)
 export const upsertSleep = asyncHandler(async (req, res) => {
-  const { userId, date } = req.params; // extracting from URL params
+  const { userId, date } = req.params;
 
-  const {
+  let {
     sleepTime,
     wakeupTime,
     alarm,
@@ -78,6 +67,11 @@ export const upsertSleep = asyncHandler(async (req, res) => {
   if (!userId || !date) {
     res.status(400);
     throw new Error("Missing userId or date in URL parameters");
+  }
+
+  // Always recalculate totalSleepTime if sleepTime and wakeupTime are provided
+  if (sleepTime && wakeupTime) {
+    totalSleepTime = calculateSleepDuration(sleepTime, wakeupTime);
   }
 
   const sleep = await Sleep.findOneAndUpdate(
