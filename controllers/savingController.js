@@ -41,7 +41,7 @@ export const getSavingByUserAndDate = asyncHandler(async (req, res) => {
 
 // Create or update saving record
 export const updateSaving = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.body.userId;
   const bodyData = req.body;
 
   const updates = {
