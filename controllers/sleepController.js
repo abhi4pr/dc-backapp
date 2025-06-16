@@ -2,9 +2,6 @@ import Sleep from "../models/Sleep.js";
 import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-// const totalSleepTime = calculateSleepDuration(sleepTime, wakeupTime);
-
-// Add a new sleep record (only if not already exists for user & date)
 export const addSleep = asyncHandler(async (req, res) => {
   // const userId = req.user.id;
   const {
@@ -44,13 +41,19 @@ export const addSleep = asyncHandler(async (req, res) => {
   });
 });
 
-// Helper to calculate total sleep duration in minutes
+function parseTimeString(timeStr) {
+  if (!/^\d{2}:\d{2}$/.test(timeStr)) return null;
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
 function calculateSleepDuration(sleepTime, wakeupTime) {
-  if (!sleepTime || !wakeupTime) return null;
-  const sleep = new Date(sleepTime);
-  const wake = new Date(wakeupTime);
-  let diff = (wake - sleep) / (1000 * 60); // difference in minutes
-  if (diff < 0) diff += 24 * 60; // handle overnight sleep
+  // Accepts "HH:mm" format
+  const sleepMins = parseTimeString(sleepTime);
+  const wakeMins = parseTimeString(wakeupTime);
+  if (sleepMins === null || wakeMins === null) return null;
+  let diff = wakeMins - sleepMins;
+  if (diff < 0) diff += 24 * 60;
   return diff;
 }
 

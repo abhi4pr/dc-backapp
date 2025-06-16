@@ -2,9 +2,9 @@ import express from "express";
 import {
   addSleep,
   upsertSleep,
-  getAllSleepRecords,
+  // getAllSleepRecords,
   getSleepByUser,
-  deleteSleepRecord,
+  // deleteSleepRecord,
   getSleepByUserAndDate,
 } from "../controllers/sleepController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
