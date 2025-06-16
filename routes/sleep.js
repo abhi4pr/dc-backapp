@@ -11,11 +11,11 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getAllSleepRecords);
-router.get("/:userId", authMiddleware, getSleepByUser);
-router.get("/user/:userId/date/:date", authMiddleware, getSleepByUserAndDate);
-router.put("/:userId/:date", authMiddleware, addSleep);
-router.post("/", authMiddleware, upsertSleep);
-router.delete("/:userId/:date", authMiddleware, deleteSleepRecord);
+// router.get("/", authMiddleware, getAllSleepRecords);
+router.get("/:user", authMiddleware, getSleepByUser);
+router.get("/user/:user/date/:date", authMiddleware, getSleepByUserAndDate);
+router.put("/:user/:date", authMiddleware, upsertSleep);
+router.post("/", authMiddleware, addSleep);
+// router.delete("/:user/:date", authMiddleware, deleteSleepRecord);
 
 export default router;

@@ -43,21 +43,24 @@ export const getSavingByUserAndDate = asyncHandler(async (req, res) => {
 // Create or update saving record
 export const updateSaving = asyncHandler(async (req, res) => {
   const userId = req.body.user;
+  const date = req.body.date;
   const bodyData = req.body;
 
   const updates = {
     ...bodyData,
     user: userId,
+    date,
   };
 
+  // Find by user and date, update if exists, else create new
   const saving = await Saving.findOneAndUpdate(
-    { user: userId },
+    { user: userId, date: date },
     { $set: updates },
     { new: true, upsert: true, runValidators: true }
   );
 
   res.status(200).json({
-    message: "Saving record updated",
+    message: "Saving record updated or created",
     saving,
   });
 });
