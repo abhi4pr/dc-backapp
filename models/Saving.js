@@ -12,7 +12,7 @@ const savingSchema = new mongoose.Schema(
       required: false,
     },
     cigarette: {
-      type: Boolean,
+      type: Number,
       default: false,
     },
     dailyCigaretteCost: {
@@ -20,7 +20,7 @@ const savingSchema = new mongoose.Schema(
       default: 0,
     },
     alcohol: {
-      type: Boolean,
+      type: Number,
       default: false,
     },
     dailyAlcoholCost: {
@@ -28,7 +28,7 @@ const savingSchema = new mongoose.Schema(
       default: 0,
     },
     weed: {
-      type: Boolean,
+      type: Number,
       default: false,
     },
     dailyWeedCost: {

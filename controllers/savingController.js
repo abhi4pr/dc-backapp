@@ -1,9 +1,10 @@
 import Saving from "../models/Saving.js";
 import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import mongoose from "mongoose";
 
 export const addSaving = asyncHandler(async (req, res) => {
-  const userId = req.body.id;
+  const userId = req.body.user;
   const date = req.body.date;
   const existing = await Saving.findOne({ user: userId, date });
 
@@ -41,7 +42,7 @@ export const getSavingByUserAndDate = asyncHandler(async (req, res) => {
 
 // Create or update saving record
 export const updateSaving = asyncHandler(async (req, res) => {
-  const userId = req.body.userId;
+  const userId = req.body.user;
   const bodyData = req.body;
 
   const updates = {
@@ -91,9 +92,9 @@ export const getTotalSavingsByUser = asyncHandler(async (req, res) => {
     {
       $group: {
         _id: "$user",
-        totalCigarette: { $sum: "$dailyCigaretteCost" },
-        totalAlcohol: { $sum: "$dailyAlcoholCost" },
-        totalWeed: { $sum: "$dailyWeedCost" },
+        cigarette: { $sum: "$cigarette" },
+        alcohol: { $sum: "$alcohol" },
+        weed: { $sum: "$weed" },
       },
     },
   ]);
@@ -104,8 +105,8 @@ export const getTotalSavingsByUser = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     userId,
-    totalCigarette: result[0].totalCigarette,
-    totalAlcohol: result[0].totalAlcohol,
-    totalWeed: result[0].totalWeed,
+    totalCigarette: result[0].cigarette,
+    totalAlcohol: result[0].alcohol,
+    totalWeed: result[0].weed,
   });
 });
