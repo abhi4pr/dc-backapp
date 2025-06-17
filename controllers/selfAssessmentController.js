@@ -6,8 +6,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 // CREATE
 export const addQuestion = asyncHandler(async (req, res) => {
   const { question, category, options, note } = req.body;
-  if (!options || options.length !== 4)
-    throw new AppError("4 options required", 400);
+  if (!options) throw new AppError("options required", 400);
   const newQuestion = await SelfAssessmentQuestion.create({
     question,
     category,
@@ -50,8 +49,8 @@ export const deleteQuestion = asyncHandler(async (req, res) => {
 
 // CREATE or UPDATE
 export const submitAnswer = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
-  const { questionId, selectedOption } = req.body;
+  const userId = req.body.user;
+  const { questionId, selectedOption, questionText } = req.body;
 
   const question = await SelfAssessmentQuestion.findById(questionId);
   if (!question) throw new AppError("Invalid question", 404);
@@ -60,7 +59,7 @@ export const submitAnswer = asyncHandler(async (req, res) => {
 
   const answer = await SelfAssessmentAnswer.findOneAndUpdate(
     { user: userId, question: questionId },
-    { selectedOption },
+    { selectedOption, questionText },
     { upsert: true, new: true, runValidators: true }
   );
 
@@ -70,7 +69,7 @@ export const submitAnswer = asyncHandler(async (req, res) => {
 // READ ALL USER ANSWERS
 export const getUserAnswers = asyncHandler(async (req, res) => {
   const answers = await SelfAssessmentAnswer.find({
-    user: req.user.id,
+    user: req.bodu.user,
   }).populate("question");
   res.status(200).json(answers);
 });
@@ -79,7 +78,7 @@ export const getUserAnswers = asyncHandler(async (req, res) => {
 export const getUserAnswerById = asyncHandler(async (req, res) => {
   const answer = await SelfAssessmentAnswer.findOne({
     _id: req.params.id,
-    user: req.user.id,
+    user: req.body.user,
   }).populate("question");
 
   if (!answer) throw new AppError("Answer not found", 404);
@@ -90,7 +89,7 @@ export const getUserAnswerById = asyncHandler(async (req, res) => {
 export const deleteUserAnswer = asyncHandler(async (req, res) => {
   const deleted = await SelfAssessmentAnswer.findOneAndDelete({
     _id: req.params.id,
-    user: req.user.id,
+    user: req.body.user,
   });
 
   if (!deleted) throw new AppError("Answer not found", 404);

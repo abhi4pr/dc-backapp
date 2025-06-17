@@ -12,6 +12,11 @@ const answerSchema = new mongoose.Schema(
       ref: "SelfAssessmentQuestion",
       required: true,
     },
+    questionText: {
+      type: String,
+      required: false,
+      default: "",
+    },
     selectedOption: {
       type: String,
       required: true,
