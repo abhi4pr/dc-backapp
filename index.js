@@ -56,30 +56,6 @@ app.use("/api/ai", aiRoutes);
 // Socket io
 io.on("connection", (socket) => {
   console.log("A user connected: " + socket.id);
-
-  // Join user to their own room
-  socket.on("join", ({ userId }) => {
-    socket.join(userId);
-    console.log(`User ${userId} joined their room`);
-  });
-
-  // Handle sending messages
-  socket.on("send-message", async ({ senderId, receiverId, content }) => {
-    const message = new Message({
-      sender: senderId,
-      receiver: receiverId,
-      content,
-    });
-    await message.save();
-
-    // Emit to receiver and sender
-    io.to(receiverId).emit("receive-message", message);
-    io.to(senderId).emit("receive-message", message);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected: " + socket.id);
-  });
 });
 
 // to check if api's running or not

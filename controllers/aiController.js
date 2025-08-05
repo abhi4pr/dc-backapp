@@ -1,4 +1,11 @@
 import asyncHandler from "../utils/asyncHandler.js";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey:
+    process.env.OPENAI_API_KEY ||
+    "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",
+});
 
 export const pateintdata = asyncHandler(async (req, res) => {
   const { topic } = req.body;
