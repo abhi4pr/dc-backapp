@@ -39,21 +39,23 @@ const userSchema = new mongoose.Schema(
       required: false,
       default: "",
     },
-    role: {
-      type: String,
-      required: true,
-      enum: ["Student", "Teacher"],
-      default: "Student",
-    },
     verified: {
       type: Boolean,
       required: false,
       default: false,
     },
-    intro: {
+    unique_link: {
       type: String,
+      unique: true,
       required: false,
-      default: "",
+    },
+    hit_count: {
+      type: Number,
+      default: 0,
+    },
+    hit_limit: {
+      type: Number,
+      default: 10,
     },
   },
   { timestamps: true }

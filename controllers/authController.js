@@ -10,14 +10,14 @@ export const signup = asyncHandler(async (req, res) => {
   const { error } = signupSchema.validate(req.body);
   if (error) throw new AppError(error.details[0].message, 400);
 
-  const { name, email, password, role } = req.body;
+  const { name, email, password, phone } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new AppError("Email already registered", 409);
 
   const hashedPassword = await argon2.hash(password);
 
-  const user = new User({ name, email, password: hashedPassword, role });
+  const user = new User({ name, email, password: hashedPassword, phone });
   await user.save();
 
   const verifyToken = jwt.sign(

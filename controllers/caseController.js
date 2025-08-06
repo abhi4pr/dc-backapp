@@ -3,20 +3,11 @@ import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const addPost = asyncHandler(async (req, res) => {
-  // const { title, content, category, user, center_address } = req.body;
-
-  // if (!title || !content || !category || !user || !center_address) {
-  //   throw new AppError(
-  //     "Title, Content, category, user, center and address are required",
-  //     400
-  //   );
-  // }
-
   const imagePath = req.fileUrl || "";
 
   const post = await Case.create({
     ...req.body,
-    post_img: imagePath,
+    image: imagePath,
   });
 
   res.status(201).json({
@@ -42,7 +33,7 @@ export const updatePost = asyncHandler(async (req, res) => {
   };
 
   if (req.file) {
-    updates.post_img = req.fileUrl;
+    updates.image = req.fileUrl;
   }
 
   const updatedPost = await Case.findByIdAndUpdate(

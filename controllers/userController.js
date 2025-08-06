@@ -19,7 +19,8 @@ export const updateUser = asyncHandler(async (req, res) => {
   if (bodyData.name) updates.name = bodyData.name;
   if (bodyData.surname) updates.surname = bodyData.surname;
   if (bodyData.address) updates.address = bodyData.address;
-  if (bodyData.intro) updates.intro = bodyData.intro;
+  if (bodyData.phone) updates.phone = bodyData.phone;
+  if (bodyData.unique_link) updates.unique_link = bodyData.unique_link;
 
   if (req.file) {
     const imagePath = req.fileUrl;
@@ -74,5 +75,22 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     message: "User deleted successfully",
+  });
+});
+
+export const updateUserChatLimit = asyncHandler(async (req, res) => {
+  const userId = req.params._id;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { $set: { hit_limit: 100 } },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedUser) throw new AppError("User not found", 404);
+
+  res.status(200).json({
+    message: "User chat limit updated successfully",
+    user: updatedUser,
   });
 });
