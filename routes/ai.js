@@ -11,10 +11,10 @@ import upload, { fileUpload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.post("/send_patient_data", authMiddleware, pateintdata);
-router.post("/send_search_remedy", authMiddleware, searchRemedy);
-router.post("/send_compare_data", authMiddleware, compareData);
-router.post("/send_ai_report", authMiddleware, aiReport);
-router.post("/send_medicine_detail", authMiddleware, medicineDetails);
+router.post("/send_patient_data/:_id", authMiddleware, pateintdata);
+router.post("/send_search_remedy/:_id", authMiddleware, searchRemedy);
+router.post("/send_compare_data/:_id", authMiddleware, compareData);
+router.post("/send_ai_report/:_id", authMiddleware, aiReport);
+router.post("/send_medicine_detail/:_id", authMiddleware, medicineDetails);
 
 export default router;

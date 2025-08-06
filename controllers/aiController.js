@@ -25,7 +25,10 @@ export const pateintdata = asyncHandler(async (req, res) => {
   }
   try {
     await updateChatCount(req.params._id);
-    const prompt = `Write a detailed, engaging blog post on the topic: "${topic}". Include an introduction, 2-3 subheadings, and a conclusion. Keep it professional but conversational.`;
+    const prompt = `
+      Write a summary about patient suffering from, symptoms, medicine names based on these given data: 
+      "${topic}". 
+      Keep it professional but conversational.`;
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -33,7 +36,7 @@ export const pateintdata = asyncHandler(async (req, res) => {
       max_tokens: 1000,
     });
     const blogContent = chatCompletion.choices[0].message.content;
-    res.json({ blog: blogContent });
+    res.json({ data: blogContent });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     res.status(500).json({ error: "Failed to generate blog" });
@@ -41,13 +44,13 @@ export const pateintdata = asyncHandler(async (req, res) => {
 });
 
 export const searchRemedy = asyncHandler(async (req, res) => {
-  const { topic } = req.body;
-  if (!topic) {
+  const { disease } = req.body;
+  if (!disease) {
     return res.status(400).json({ error: "Topic is required" });
   }
   try {
     await updateChatCount(req.params._id);
-    const prompt = `Write a detailed, engaging blog post on the topic: "${topic}". Include an introduction, 2-3 subheadings, and a conclusion. Keep it professional but conversational.`;
+    const prompt = `Please search Homeopathic medicine for disease name: "${disease}". Give atleast 2-3 Homeopathic medicines. Keep it professional but conversational.`;
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -55,7 +58,7 @@ export const searchRemedy = asyncHandler(async (req, res) => {
       max_tokens: 1000,
     });
     const blogContent = chatCompletion.choices[0].message.content;
-    res.json({ blog: blogContent });
+    res.json({ data: blogContent });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     res.status(500).json({ error: "Failed to generate blog" });
@@ -63,13 +66,13 @@ export const searchRemedy = asyncHandler(async (req, res) => {
 });
 
 export const aiReport = asyncHandler(async (req, res) => {
-  const { topic } = req.body;
-  if (!topic) {
-    return res.status(400).json({ error: "Topic is required" });
+  const { report } = req.file;
+  if (!report) {
+    return res.status(400).json({ error: "Report is required" });
   }
   try {
     await updateChatCount(req.params._id);
-    const prompt = `Write a detailed, engaging blog post on the topic: "${topic}". Include an introduction, 2-3 subheadings, and a conclusion. Keep it professional but conversational.`;
+    const prompt = `Write a summary analysis of given patient report "${report}". Keep it professional but conversational.`;
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -77,7 +80,7 @@ export const aiReport = asyncHandler(async (req, res) => {
       max_tokens: 1000,
     });
     const blogContent = chatCompletion.choices[0].message.content;
-    res.json({ blog: blogContent });
+    res.json({ data: blogContent });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     res.status(500).json({ error: "Failed to generate blog" });
@@ -85,13 +88,13 @@ export const aiReport = asyncHandler(async (req, res) => {
 });
 
 export const compareData = asyncHandler(async (req, res) => {
-  const { topic } = req.body;
-  if (!topic) {
-    return res.status(400).json({ error: "Topic is required" });
+  const { dr1, dr2, symptoms } = req.body;
+  if (!symptoms) {
+    return res.status(400).json({ error: "symptoms is required" });
   }
   try {
     await updateChatCount(req.params._id);
-    const prompt = `Write a detailed, engaging blog post on the topic: "${topic}". Include an introduction, 2-3 subheadings, and a conclusion. Keep it professional but conversational.`;
+    const prompt = `Write a detailed difference between both doctors like observations, medication etc "${dr1} and ${dr2}" based on given patient symptoms "${symptoms}".Keep it professional but conversational.`;
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -99,7 +102,7 @@ export const compareData = asyncHandler(async (req, res) => {
       max_tokens: 1000,
     });
     const blogContent = chatCompletion.choices[0].message.content;
-    res.json({ blog: blogContent });
+    res.json({ data: blogContent });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     res.status(500).json({ error: "Failed to generate blog" });
@@ -107,13 +110,13 @@ export const compareData = asyncHandler(async (req, res) => {
 });
 
 export const medicineDetails = asyncHandler(async (req, res) => {
-  const { topic } = req.body;
-  if (!topic) {
-    return res.status(400).json({ error: "Topic is required" });
+  const { medicine_name } = req.body;
+  if (!medicine_name) {
+    return res.status(400).json({ error: "medicine name is required" });
   }
   try {
     await updateChatCount(req.params._id);
-    const prompt = `Write a detailed, engaging blog post on the topic: "${topic}". Include an introduction, 2-3 subheadings, and a conclusion. Keep it professional but conversational.`;
+    const prompt = `Write a detailed, engaging blog on the given medicine name: "${medicine_name}" like contents, who made it, cures etc. Keep it professional but conversational.`;
     const chatCompletion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -121,7 +124,7 @@ export const medicineDetails = asyncHandler(async (req, res) => {
       max_tokens: 1000,
     });
     const blogContent = chatCompletion.choices[0].message.content;
-    res.json({ blog: blogContent });
+    res.json({ data: blogContent });
   } catch (error) {
     console.error("OpenAI API Error:", error);
     res.status(500).json({ error: "Failed to generate blog" });
