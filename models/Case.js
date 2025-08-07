@@ -312,6 +312,16 @@ const postSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    user: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    answer: {
+      type: String,
+      required: false,
+      trim: true,
+    },
   },
   { timestamps: true }
 );
