@@ -84,7 +84,7 @@ export const login = asyncHandler(async (req, res) => {
   const token = jwt.sign(
     { id: user._id, email: user.email },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+    { expiresIn: process.env.JWT_EXPIRES_IN || "1d" }
   );
 
   res.status(200).json({
@@ -94,6 +94,11 @@ export const login = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      address: user.address,
+      phone: user.phone,
+      profile_pic: user.profile_pic,
+      hit_count: user.hit_count,
+      hit_limit: user.hit_limit,
     },
   });
 });
@@ -109,7 +114,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   const resetToken = jwt.sign(
     { id: user._id },
     process.env.JWT_RESET_SECRET || "your_reset_secret",
-    { expiresIn: "15m" }
+    { expiresIn: "1d" }
   );
 
   const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
@@ -131,4 +136,32 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: "Password reset email sent",
   });
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token) throw new AppError("Token is required", 400);
+  if (!newPassword) throw new AppError("New password is required", 400);
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_RESET_SECRET || "your_reset_secret"
+    );
+
+    const user = await User.findById(decoded.id);
+    if (!user) throw new AppError("User not found", 404);
+
+    const hashedPassword = await argon2.hash(newPassword);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({
+      message:
+        "Password reset successful. You can now log in with your new password.",
+    });
+  } catch (err) {
+    throw new AppError("Invalid or expired token", 400);
+  }
 });
