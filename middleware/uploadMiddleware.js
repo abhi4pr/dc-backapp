@@ -3,22 +3,14 @@ import ImageKit from "imagekit";
 import multer from "multer";
 
 const imagekit = new ImageKit({
-  publicKey: "public_CjgzM0q1BFn6o5gOVSxw3CJFke4=",
-  privateKey: "private_EQhKcvatje0axi3xWLpoXL6s2+0=",
-  urlEndpoint: "https://ik.imagekit.io/cun839umq",
+  publicKey: "public_qYuolJA4BfGTVRpzZQI9vmASoHI=",
+  privateKey: "private_IrT2+aP+QFm14XkU11w+tFWU8Qc=",
+  urlEndpoint: "https://ik.imagekit.io/nc0azgocu",
 });
 
 const storage = multer.memoryStorage();
 
-const allowedFormats = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "audio/mp3",
-  "video/mp4",
-  "audio/mpeg",
-  "application/pdf",
-];
+const allowedFormats = ["image/jpeg", "image/jpg", "image/png"];
 
 const fileFilter = (req, file, cb) => {
   if (allowedFormats.includes(file.mimetype)) {
@@ -30,7 +22,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
   fileFilter,
 });
 

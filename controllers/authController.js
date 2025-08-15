@@ -1,29 +1,75 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import { signupSchema, loginSchema } from "../validations/authValidation.js";
 import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import sendEmail from "../utils/sendEmail.js";
+import { signupSchema, loginSchema } from "../validations/authValidation.js";
 
-const signup = async (req, res) => {
+export const signup = asyncHandler(async (req, res) => {
   const { error } = signupSchema.validate(req.body);
   if (error) throw new AppError(error.details[0].message, 400);
 
-  const { name, email, password, phone, address } = req.body;
+  const { name, email, password, phone } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) throw new AppError("Email already registered", 409);
 
   const hashedPassword = await argon2.hash(password);
 
-  const user = new User({ name, email, password: hashedPassword });
+  const user = new User({ name, email, password: hashedPassword, phone });
   await user.save();
 
-  res.status(201).json({ message: "User registered successfully" });
-};
+  const verifyToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_VERIFY_SECRET || "your_verify_secret",
+    { expiresIn: "1d" }
+  );
 
-const login = async (req, res) => {
+  const verifyLink = `${process.env.FRONTEND_URL}/verify-email?token=${verifyToken}`;
+  const html = `
+    <p>Hello ${user.name},</p>
+    <p>Thank you for signing up. Please verify your email address by clicking the link below:</p>
+    <a href="${verifyLink}">${verifyLink}</a>
+    <p>This link will expire in 24 hours.</p>
+    <p>If you did not sign up, please ignore this email.</p>
+  `;
+
+  await sendEmail({
+    to: user.email,
+    subject: "Verify your email address",
+    html,
+  });
+
+  res.status(201).json({ message: "User registered successfully" });
+});
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_VERIFY_SECRET || "your_verify_secret"
+    );
+
+    const user = await User.findById(decoded.id);
+    if (!user) throw new AppError("User not found", 404);
+
+    if (user.verified) {
+      return res.status(200).json({ message: "Email already verified" });
+    }
+
+    user.verified = true;
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (err) {
+    throw new AppError("Invalid or expired token", 400);
+  }
+});
+
+export const login = asyncHandler(async (req, res) => {
   const { error } = loginSchema.validate(req.body);
   if (error) throw new AppError(error.details[0].message, 400);
 
@@ -48,11 +94,16 @@ const login = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      address: user.address,
+      phone: user.phone,
+      profile_pic: user.profile_pic,
+      hit_count: user.hit_count,
+      hit_limit: user.hit_limit,
     },
   });
-};
+});
 
-const forgotPassword = asyncHandler(async (req, res) => {
+export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   if (!email) throw new AppError("Email is required", 400);
@@ -63,7 +114,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const resetToken = jwt.sign(
     { id: user._id },
     process.env.JWT_RESET_SECRET || "your_reset_secret",
-    { expiresIn: "15m" }
+    { expiresIn: "1d" }
   );
 
   const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
@@ -87,8 +138,30 @@ const forgotPassword = asyncHandler(async (req, res) => {
   });
 });
 
-export default {
-  signup: asyncHandler(signup),
-  login: asyncHandler(login),
-  forgotPassword: asyncHandler(forgotPassword),
-};
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token) throw new AppError("Token is required", 400);
+  if (!newPassword) throw new AppError("New password is required", 400);
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_RESET_SECRET || "your_reset_secret"
+    );
+
+    const user = await User.findById(decoded.id);
+    if (!user) throw new AppError("User not found", 404);
+
+    const hashedPassword = await argon2.hash(newPassword);
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({
+      message:
+        "Password reset successful. You can now log in with your new password.",
+    });
+  } catch (err) {
+    throw new AppError("Invalid or expired token", 400);
+  }
+});

@@ -6,43 +6,60 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      minlength: 3,
-      maxlength: 30,
+    },
+    surname: {
+      type: String,
+      required: false,
+      default: "",
+      trim: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true,
-      lowercase: true,
       trim: true,
+      unique: true,
     },
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      trim: true,
+    },
+    profile_pic: {
+      type: String,
+      required: false,
+      default: "",
     },
     phone: {
       type: String,
-      trim: true,
-      maxlength: 10,
+      required: false,
+      default: 0,
     },
     address: {
       type: String,
-      trim: true,
+      required: false,
+      default: "",
     },
-    profileImage: {
-      type: String,
-      trim: true,
+    verified: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    language: {
+    unique_link: {
       type: String,
-      enum: ["en", "hi"],
-      default: "en",
+      unique: true,
+      required: false,
+    },
+    hit_count: {
+      type: Number,
+      default: 0,
+    },
+    hit_limit: {
+      type: Number,
+      default: 10,
     },
   },
   { timestamps: true }
 );
 
 const User = mongoose.model("User", userSchema);
-
 export default User;

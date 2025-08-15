@@ -3,31 +3,28 @@ import AppError from "../utils/AppError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params._id).select("-password");
 
   if (!user) throw new AppError("User not found", 404);
 
-  res.status(200).json({ user });
+  res.status(200).json({ message: "user retrieved successfully", user });
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
   const bodyData = req.body;
-  const { error } = updateUserSchema.validate(bodyData);
-  if (error) throw new AppError(error.details[0].message, 400);
 
-  const userId = req.user.id;
+  const userId = req.params._id;
   const updates = {};
 
   if (bodyData.name) updates.name = bodyData.name;
-  if (bodyData.email) updates.email = bodyData.email;
-  if (bodyData.password) {
-    const hashedPassword = await argon2.hash(bodyData.password);
-    updates.password = hashedPassword;
-  }
+  if (bodyData.surname) updates.surname = bodyData.surname;
+  if (bodyData.address) updates.address = bodyData.address;
+  if (bodyData.phone) updates.phone = bodyData.phone;
+  if (bodyData.unique_link) updates.unique_link = bodyData.unique_link;
 
   if (req.file) {
     const imagePath = req.fileUrl;
-    updates.profileImage = imagePath;
+    updates.profile_pic = imagePath;
   }
 
   const updatedUser = await User.findByIdAndUpdate(
@@ -44,24 +41,30 @@ export const updateUser = asyncHandler(async (req, res) => {
   });
 });
 
-export const getAllUsers = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Default to page 1
-  const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
-  const skip = (page - 1) * limit;
+export const updatePassword = asyncHandler(async (req, res) => {
+  const userId = req.params._id;
+  const { currentPassword, newPassword } = req.body;
 
-  const users = await User.find()
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
+  if (!currentPassword || !newPassword) {
+    throw new AppError("Both current and new passwords are required", 400);
+  }
 
-  const totalUsers = await User.find().select("-password");
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  const isMatch = await user.comparePassword(currentPassword);
+  if (!isMatch) {
+    throw new AppError("Current password is incorrect", 401);
+  }
+
+  user.password = newPassword;
+  await user.save();
 
   res.status(200).json({
-    count: users.length,
-    total: totalUsers,
-    page,
-    totalPages: Math.ceil(totalUsers / limit),
-    users,
+    message: "Password updated successfully",
   });
 });
 
@@ -72,5 +75,22 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     message: "User deleted successfully",
+  });
+});
+
+export const updateUserChatLimit = asyncHandler(async (req, res) => {
+  const userId = req.params._id;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { $set: { hit_limit: 100 } },
+    { new: true, runValidators: true }
+  );
+
+  if (!updatedUser) throw new AppError("User not found", 404);
+
+  res.status(200).json({
+    message: "User chat limit updated successfully",
+    user: updatedUser,
   });
 });
