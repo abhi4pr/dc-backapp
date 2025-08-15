@@ -5,7 +5,7 @@ import User from "../models/User.js";
 const openai = new OpenAI({
   apiKey:
     process.env.OPENAI_API_KEY ||
-    "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",
+    "",
 });
 
 const updateChatCount = async (userId) => {
