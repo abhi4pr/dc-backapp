@@ -13,7 +13,7 @@ const updateChatCount = async (userId) => {
 
   const updatedUser = await User.findByIdAndUpdate(
     userId,
-    { $inc: { hit_count: 1 } },
+    { $dec: { hit_count: 1 } },
     { new: true, runValidators: true }
   );
 

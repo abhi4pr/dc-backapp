@@ -75,8 +75,8 @@ export const login = asyncHandler(async (req, res) => {
 
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) throw new AppError("Invalid email or password", 401);
+  const user = await User.findOne({ email, verified: true });
+  if (!user) throw new AppError("Invalid email/password, Did you verified your email ?", 401);
 
   const valid = await argon2.verify(user.password, password);
   if (!valid) throw new AppError("Invalid email or password", 401);

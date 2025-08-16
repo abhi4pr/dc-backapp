@@ -46,16 +46,78 @@ const userSchema = new mongoose.Schema(
     },
     unique_link: {
       type: String,
-      unique: true,
+      // unique: true,
       required: false,
     },
     hit_count: {
       type: Number,
-      default: 0,
+      default: 10,
     },
     hit_limit: {
       type: Number,
       default: 10,
+    },
+    qualification: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    specialties: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    years_experience: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    license_number: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    clinic_name: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    clinic_address: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    consultation_hours: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    languages_spoken: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    fee_structure: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    emergency_contact: {
+      type: String,
+      required: false,
+      default: ""
+    },
+    telemedicine_available: {
+      type: Boolean
+    },
+    mfa_enabled: {
+      type: Boolean
+    },
+    profile_visible_to_patients: {
+      type: Boolean
+    },
+    show_license_to_public: {
+      type: Boolean
     },
   },
   { timestamps: true }
