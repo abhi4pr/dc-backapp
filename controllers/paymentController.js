@@ -4,11 +4,12 @@ import asyncHandler from "../utils/asyncHandler.js";
 import axios from "axios";
 import crypto from "crypto";
 
-PHONEPE_MERCHANT_ID = YOUR_MERCHANT_ID
-PHONEPE_SALT_KEY = YOUR_SALT_KEY
-PHONEPE_SALT_INDEX = 1
-PHONEPE_BASE_URL_SANDBOX = 'https://api-preprod.phonepe.com/apis/pg-sandbox'
-PHONEPE_BASE_URL_PROD = 'https://api.phonepe.com/apis/hermes'
+const PHONEPE_MERCHANT_ID = "YOUR_MERCHANT_ID";
+const PHONEPE_SALT_KEY = "YOUR_SALT_KEY";
+const PHONEPE_SALT_INDEX = 1;
+const PHONEPE_BASE_URL_SANDBOX =
+  "https://api-preprod.phonepe.com/apis/pg-sandbox";
+const PHONEPE_BASE_URL_PROD = "https://api.phonepe.com/apis/hermes";
 
 function xVerify(base64Payload, path) {
   // X-VERIFY = SHA256(base64Payload + path + saltKey) + "###" + saltIndex
@@ -23,7 +24,9 @@ export const createPayment = asyncHandler(async (req, res) => {
     if (!amount) return res.status(400).json({ error: "amount required" });
     const amountPaise = Math.round(Number(amount) * 100);
 
-    const merchantTransactionId = `TXN_${Date.now()}_${Math.floor(Math.random() * 1e6)}`;
+    const merchantTransactionId = `TXN_${Date.now()}_${Math.floor(
+      Math.random() * 1e6
+    )}`;
     const payload = {
       merchantId: process.env.PHONEPE_MERCHANT_ID,
       merchantTransactionId,
@@ -35,7 +38,9 @@ export const createPayment = asyncHandler(async (req, res) => {
       paymentInstrument: { type: "PAY_PAGE" }, // Standard Checkout
     };
 
-    const base64Payload = Buffer.from(JSON.stringify(payload)).toString("base64");
+    const base64Payload = Buffer.from(JSON.stringify(payload)).toString(
+      "base64"
+    );
     const path = "/pg/v1/pay";
     const x_verify = xVerify(base64Payload, path);
 
@@ -64,12 +69,17 @@ export const createPayment = asyncHandler(async (req, res) => {
 
     // Expect redirect URL in instrumentResponse
     const redirectUrl = r?.data?.data?.instrumentResponse?.redirectInfo?.url;
-    if (!redirectUrl) return res.status(500).json({ error: "Redirect URL missing", data: r.data });
+    if (!redirectUrl)
+      return res
+        .status(500)
+        .json({ error: "Redirect URL missing", data: r.data });
 
     res.json({ ok: true, merchantTransactionId, redirectUrl });
   } catch (err) {
     console.error(err?.response?.data || err.message);
-    res.status(500).json({ ok: false, error: err?.response?.data || err.message });
+    res
+      .status(500)
+      .json({ ok: false, error: err?.response?.data || err.message });
   }
 });
 
@@ -88,7 +98,12 @@ export const paymentCallback = asyncHandler(async (req, res) => {
     if (txnId) {
       await Payment.updateOne(
         { merchantTransactionId: txnId },
-        { $set: { rawCallback: body, status: code === "PAYMENT_SUCCESS" ? "SUCCESS" : "FAILED" } }
+        {
+          $set: {
+            rawCallback: body,
+            status: code === "PAYMENT_SUCCESS" ? "SUCCESS" : "FAILED",
+          },
+        }
       );
     }
     // Respond 200 quickly
@@ -97,13 +112,20 @@ export const paymentCallback = asyncHandler(async (req, res) => {
     console.error(e);
     res.status(200).json({ ok: true }); // Always 200 to PhonePe
   }
-})
+});
 
 export const paymentStatus = asyncHandler(async (req, res) => {
   try {
     const { merchantTransactionId } = req.params;
     const path = `/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}`;
-    const url = `${isProd ? process.env.PHONEPE_BASE_URL_PROD.replace("/apis/hermes", "/apis/hermes") : "https://api.preprod.phonepe.com/apis/hermes"}${path}`;
+    const url = `${
+      isProd
+        ? process.env.PHONEPE_BASE_URL_PROD.replace(
+            "/apis/hermes",
+            "/apis/hermes"
+          )
+        : "https://api.preprod.phonepe.com/apis/hermes"
+    }${path}`;
     // NOTE: Different doc pages show slightly different hostnames for preprod; using hermes preprod status per docs. :contentReference[oaicite:3]{index=3}
 
     const x_verify = xVerify("", path); // Status often requires x-verify of ("" + path + saltKey)
@@ -121,6 +143,8 @@ export const paymentStatus = asyncHandler(async (req, res) => {
     res.json({ ok: true, status, data: r.data });
   } catch (err) {
     console.error(err?.response?.data || err.message);
-    res.status(500).json({ ok: false, error: err?.response?.data || err.message });
+    res
+      .status(500)
+      .json({ ok: false, error: err?.response?.data || err.message });
   }
 });

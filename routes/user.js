@@ -10,7 +10,7 @@ import upload, { fileUpload } from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
-router.get("/:_id", authMiddleware, getUserById);
+router.get("/:_id", getUserById);
 router.put(
   "/update_user/:_id",
   authMiddleware,
