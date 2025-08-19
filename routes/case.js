@@ -14,7 +14,6 @@ const router = express.Router();
 
 router.post(
   "/add_post",
-  authMiddleware,
   upload.single("image"),
   fileUpload,
   addPost

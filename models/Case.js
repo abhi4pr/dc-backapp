@@ -87,6 +87,7 @@ const postSchema = new mongoose.Schema(
 
     image: { type: String, trim: true }, // file url or base64
     user: { type: String, required: true, trim: true },
+    airesult: { type: String, required: false }
   },
   { timestamps: true }
 );
