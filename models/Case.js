@@ -2,326 +2,91 @@ import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
-    patientname: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    patientage: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    patientgender: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    patientphone: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    patientaddress: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    suicide: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    addiction: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    skincondition: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    mentalcondition: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    discharge: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    vaccine: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    spiritual: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    support: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    medication: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    todayconcern: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    origintrigger: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    pattern: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    impact: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    thermal: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    energy: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    reactivity: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    physique: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    metabolic: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    miasmatic: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    familyhistory: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    nightmares: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    sleep: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    wakeup: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    fear: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    delusions: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    obsession: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    emotionaltrauma: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    mentalsymtoms: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    morning: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    forenoon: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    noon: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    afternoon: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    evening: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    night: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    beforeMidnight: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    afterMidnight: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    hotWeather: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    coldWeather: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    dampWeather: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    dryWeather: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    windyWeather: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    thunderstorms: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    menstrualcycle: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    flowduration: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    flowtype: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    pms: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    painpattern: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    systemreview: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    bodytemp: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    thirst: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    sleeppattern: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    sleepenv: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    image: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    pathsymptoms: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    miasanalysis: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    constassess: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    therachallenge: {
-      type: String,
-      required: false,
-      trim: true,
-    },
-    user: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    answer: {
-      type: String,
-      required: false,
-      trim: true,
-    },
+    patientname: { type: String, trim: true },
+    patientage: { type: String, trim: true },
+    patientgender: { type: String, trim: true },
+    patientemail: { type: String, trim: true },
+    patientphone: { type: String, trim: true },
+    patientaddress: { type: String, trim: true },
+
+    height_cm: { type: String, trim: true },
+    weight_kg: { type: String, trim: true },
+    bmi: { type: String, trim: true },
+    pulse: { type: String, trim: true },
+    bp_systolic: { type: String, trim: true },
+    bp_diastolic: { type: String, trim: true },
+    temperature: { type: String, trim: true },
+
+    suicide: { type: String, trim: true },
+    addiction: { type: [String], default: [] },
+    support: { type: String, trim: true },
+    medication: { type: String, trim: true },
+    sensitivities: { type: String, trim: true },
+    todayconcern: { type: String, trim: true },
+    origintrigger: { type: String, trim: true },
+    pattern: { type: String, trim: true },
+    impact: { type: String, trim: true },
+
+    timeline: { type: [String], default: [] },
+    followups: {
+      date: { type: String, trim: true },
+      remedy: { type: String, trim: true },
+      potency: { type: String, trim: true },
+      dose: { type: String, trim: true },
+      response: { type: String, trim: true },
+      notes: { type: String, trim: true },
+    },
+
+    constitution: { type: String, trim: true },
+    energy: { type: String, trim: true },
+    reactivity: { type: String, trim: true },
+    physique: { type: String, trim: true },
+
+    miasm: { type: [String], default: [] },
+    suppressed_conditions: { type: [String], default: [] },
+    acuteOrChronic: { type: String, trim: true, default: "chronic" },
+    keynotes: { type: String, trim: true },
+    temperament: { type: String, trim: true },
+    familyhistory: { type: String, trim: true },
+    birthHistory: { type: String, trim: true },
+    developmentalHistory: { type: String, trim: true },
+
+    thermal: { type: String, trim: true },
+    thirst: { type: String, trim: true },
+    appetiteDetails: { type: String, trim: true },
+    sweatType: { type: String, trim: true },
+    urineDetails: { type: String, trim: true },
+    stoolDetails: { type: String, trim: true },
+
+    modalities_position: { type: [String], default: [] },
+    modalities_motion: { type: [String], default: [] },
+    modalities_pressure: { type: [String], default: [] },
+    modalities_food: { type: [String], default: [] },
+
+    weather_aggravation: { type: [String], default: [] },
+    time_of_day: { type: [String], default: [] },
+
+    desires: { type: [String], default: [] },
+    aversions: { type: [String], default: [] },
+
+    nightmares: { type: String, trim: true },
+    mentalsymtoms: { type: String, trim: true },
+    delusions: { type: [String], default: [] },
+    obsession: { type: [String], default: [] },
+    emotionaltrauma: { type: String, trim: true },
+
+    menstrualcycle: { type: String, trim: true },
+    flowduration: { type: String, trim: true },
+    flowtype: { type: String, trim: true },
+    pms: { type: [String], default: [] },
+
+    pathsymptoms: { type: String, trim: true },
+    miasanalysis: { type: String, trim: true },
+    constassess: { type: String, trim: true },
+    therachallenge: { type: String, trim: true },
+
+    image: { type: String, trim: true }, // file url or base64
+    user: { type: String, required: true, trim: true },
   },
   { timestamps: true }
 );
