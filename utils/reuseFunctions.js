@@ -10,7 +10,7 @@ export const updateChatCount = async (userId) => {
 
   const updatedUser = await User.findByIdAndUpdate(
     userId,
-    { $dec: { hit_count: 1 } },
+    { $inc: { hit_count: -1 } },
     { new: true, runValidators: true }
   );
 
