@@ -20,22 +20,29 @@ export const updateUser = asyncHandler(async (req, res) => {
   if (bodyData.surname) updates.surname = bodyData.surname;
   if (bodyData.address) updates.address = bodyData.address;
   if (bodyData.phone) updates.phone = bodyData.phone;
-  if (bodyData.unique_link) updates.unique_link = bodyData.unique_link;
+  // if (bodyData.unique_link) updates.unique_link = bodyData.unique_link;
   if (bodyData.qualification) updates.qualification = bodyData.qualification;
   if (bodyData.specialties) updates.specialties = bodyData.specialties;
-  if (bodyData.years_experience) updates.years_experience = bodyData.years_experience;
+  if (bodyData.years_experience)
+    updates.years_experience = bodyData.years_experience;
   if (bodyData.license_number) updates.license_number = bodyData.license_number;
   if (bodyData.clinic_name) updates.clinic_name = bodyData.clinic_name;
   if (bodyData.clinic_address) updates.clinic_address = bodyData.clinic_address;
-  if (bodyData.consultation_hours) updates.consultation_hours = bodyData.consultation_hours;
-  if (bodyData.languages_spoken) updates.languages_spoken = bodyData.languages_spoken;
+  if (bodyData.consultation_hours)
+    updates.consultation_hours = bodyData.consultation_hours;
+  if (bodyData.languages_spoken)
+    updates.languages_spoken = bodyData.languages_spoken;
   if (bodyData.fee_structure) updates.fee_structure = bodyData.fee_structure;
-  if (bodyData.emergency_contact) updates.emergency_contact = bodyData.emergency_contact;
-  if (bodyData.telemedicine_available !== undefined) updates.telemedicine_available = bodyData.telemedicine_available;
-  if (bodyData.mfa_enabled !== undefined) updates.mfa_enabled = bodyData.mfa_enabled;
-  if (bodyData.profile_visible_to_patients !== undefined) updates.profile_visible_to_patients = bodyData.profile_visible_to_patients;
-  if (bodyData.show_license_to_public !== undefined) updates.show_license_to_public = bodyData.show_license_to_public;
-
+  if (bodyData.emergency_contact)
+    updates.emergency_contact = bodyData.emergency_contact;
+  if (bodyData.telemedicine_available !== undefined)
+    updates.telemedicine_available = bodyData.telemedicine_available;
+  if (bodyData.mfa_enabled !== undefined)
+    updates.mfa_enabled = bodyData.mfa_enabled;
+  if (bodyData.profile_visible_to_patients !== undefined)
+    updates.profile_visible_to_patients = bodyData.profile_visible_to_patients;
+  if (bodyData.show_license_to_public !== undefined)
+    updates.show_license_to_public = bodyData.show_license_to_public;
 
   if (req.file) {
     const imagePath = req.fileUrl;
